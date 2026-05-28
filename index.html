@@ -1,124 +1,320 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  <base target="_top">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>🔗 DB 연결 상태 테스트 웹</title>
+  <title>재정학교 투자현황 대시보드</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; background: #f8fafc; color: #334155; line-height: 1.6; }
-    .box { background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; margin-bottom: 20px; max-width: 600px; }
-    h2 { margin-top: 0; font-size: 18px; color: #0f172a; }
-    .status { font-weight: bold; padding: 6px 12px; display: inline-block; border-radius: 4px; margin-bottom: 10px; }
-    .loading { background: #f1f5f9; color: #64748b; }
-    .success { background: #dcfce7; color: #15803d; }
-    .fail { background: #fee2e2; color: #b91c1c; }
-    input, button { padding: 10px; font-size: 14px; margin-right: 5px; border-radius: 4px; border: 1px solid #cbd5e1; }
-    button { background: #2563eb; color: white; border: 0; cursor: pointer; font-weight: bold; }
-    button:hover { background: #1d4ed8; }
-    pre { background: #0f172a; color: #38bdf8; padding: 15px; border-radius: 6px; overflow-x: auto; font-size: 13px; max-height: 300px; }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, sans-serif; }
+    body { margin: 0; padding: 0; background: #f1f5f9; color: #1e293b; letter-spacing: -0.03em; }
+    header { background: white; padding: 20px; border-bottom: 1px solid #e2e8f0; text-align: center; }
+    header h1 { margin: 0; font-size: 22px; font-weight: 800; color: #0f172a; }
+    header p { margin: 4px 0 0; font-size: 13px; color: #64748b; }
+    .container { max-width: 1280px; margin: 24px auto; padding: 0 20px; display: grid; grid-template-columns: 460px 1fr; gap: 24px; align-items: start; }
+    .card { background: white; border-radius: 20px; padding: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
+    .card h2 { margin: 0 0 16px; font-size: 17px; font-weight: 700; }
+    label { display: block; margin: 12px 0 4px; font-size: 13px; font-weight: 700; color: #475569; }
+    input, select { width: 100%; border: 1px solid #cbd5e1; border-radius: 12px; padding: 10px 12px; font-size: 14px; outline: none; }
+    input:focus, select:focus { border-color: #2563eb; }
+    .money-guide { font-size: 12px; color: #2563eb; font-weight: 700; margin-top: 4px; min-height: 16px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .section-title { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 8px; }
+    .section-title h3 { margin: 0; font-size: 14px; color: #334155; }
+    .item-list { display: grid; gap: 8px; }
+    .stock-row { display: grid; grid-template-columns: 1.2fr 1fr 55px 0.8fr 65px 36px; gap: 4px; align-items: center; background: #f8fafc; padding: 6px; border-radius: 12px; border: 1px solid #e2e8f0; }
+    .wait-row { display: grid; grid-template-columns: 1fr 36px; gap: 6px; align-items: center; background: #f8fafc; padding: 6px; border-radius: 12px; border: 1px solid #e2e8f0; }
+    button { border: 0; border-radius: 12px; font-weight: 700; cursor: pointer; }
+    .btn-main { width: 100%; background: #2563eb; color: white; padding: 14px; font-size: 15px; margin-top: 20px; }
+    .btn-main:disabled { background: #94a3b8; }
+    .btn-add { background: #f1f5f9; color: #475569; padding: 6px 12px; font-size: 12px; }
+    .btn-del { background: #fee2e2; color: #ef4444; height: 34px; width: 34px; font-size: 16px; }
+    .btn-opt { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; padding: 6px 12px; font-size: 13px; }
+    .edit-banner { display: none; background: #fff7ed; border: 1px solid #ffedd5; color: #ea580c; padding: 10px; border-radius: 12px; font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .status-badge { display: inline-flex; padding: 6px 12px; border-radius: 20px; background: #f1f5f9; font-size: 12px; font-weight: 700; }
+    .status-badge.online { background: #dcfce7; color: #166534; }
+    .table-container { background: white; border-radius: 16px; border: 1px solid #e2e8f0; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 800px; }
+    th { background: #f8fafc; padding: 12px; color: #475569; font-weight: 700; border-bottom: 1px solid #e2e8f0; }
+    td { padding: 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+    .badge { display: inline-flex; padding: 4px 6px; border-radius: 6px; font-size: 12px; font-weight: 700; margin: 2px; }
+    .badge.up { background: #fee2e2; color: #dc2626; }
+    .badge.down { background: #e0f2fe; color: #0284c7; }
+    .badge.gray { background: #f1f5f9; color: #475569; }
+    .actions { display: flex; gap: 4px; }
+    .btn-tbl-edit { background: #eff6ff; color: #2563eb; padding: 4px 8px; font-size: 12px; }
+    .btn-tbl-del { background: #fff1f2; color: #ef4444; padding: 4px 8px; font-size: 12px; }
+    @media (max-width: 1024px) { .container { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-  <h1>📡 구글 시트 데이터베이스 연동 테스트</h1>
-  <p>이 웹페이지는 구글 스크립트 API와 정상적으로 통신하는지 점검하는 전용 페이지입니다.</p>
+  <header>
+    <h1>📊 재정학교 투자현황 시스템</h1>
+    <p>실시간으로 안전하게 동기화되는 프리미엄 금융 대시보드</p>
+  </header>
 
-  <div class="box">
-    <h2>1. 현재 연결 상태</h2>
-    <div id="connectionStatus" class="status loading">🔄 구글 서버에 신호 보내는 중...</div>
-    <div><button type="button" onclick="checkConnection()">🔄 다시 연결 시험하기</button></div>
-  </div>
+  <main class="container">
+    <section class="card" id="formSection">
+      <div id="editBanner" class="edit-banner">💡 수정 모드 활성화됨. 저장 시 기존 데이터가 덮어씌워집니다.</div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h2>투자 데이터 입력</h2>
+        <button type="button" class="btn-add" onclick="resetForm()">입력 리셋</button>
+      </div>
 
-  <div class="box">
-    <h2>2. 테스트 데이터 전송 (시트에 행 추가)</h2>
-    <input id="testName" type="text" placeholder="테스트 이름 입력" value="홍길동">
-    <button type="button" onclick="sendTestData()">🚀 1건 전송하기</button>
-    <p id="sendResult" style="margin-top:10px; font-weight:bold;"></p>
-  </div>
+      <label>투자자 이름</label>
+      <input id="name" placeholder="이름을 입력하세요" onblur="checkDuplicateName()">
 
-  <div class="box" style="max-width: 100%;">
-    <h2>3. 구글 시트에서 받아온 원본 데이터 (Raw JSON)</h2>
-    <p>아래 창에 데이터가 구조적으로 출력된다면 통신망이 100% 뚫린 것입니다.</p>
-    <pre id="rawLogs">데이터를 로드하는 중입니다...</pre>
-  </div>
+      <div class="grid-2">
+        <div>
+          <label>총 투자금액</label>
+          <input id="money" placeholder="예: 20,000,000" oninput="formatAndGuide(this, 'moneyGuide')">
+          <div id="moneyGuide" class="money-guide"></div>
+        </div>
+        <div>
+          <label>보유 예수금</label>
+          <input id="cash" placeholder="예: 5,000,000" oninput="formatAndGuide(this, 'cashGuide')">
+          <div id="cashGuide" class="money-guide"></div>
+        </div>
+      </div>
+
+      <label>기타 변동 및 추가 메모</label>
+      <input id="memo" placeholder="특이사항이 없으면 '변동 0'으로 기록됩니다">
+
+      <div class="section-title">
+        <h3>📈 매수 종목 보유 현황</h3>
+        <button type="button" class="btn-add" onclick="addStockField()">+ 종목 추가</button>
+      </div>
+      <div id="stockList" class="item-list"></div>
+
+      <div class="section-title">
+        <h3>⏳ 진입 대기 종목</h3>
+        <button type="button" class="btn-add" onclick="addWaitField()">+ 대기 추가</button>
+      </div>
+      <div id="waitList" class="item-list"></div>
+
+      <button type="button" id="saveBtn" class="btn-main" onclick="submitData()">구글 시트에 안전하게 저장하기</button>
+    </section>
+
+    <section class="card">
+      <div class="toolbar">
+        <h2>전체 참가자 자산 현황</h2>
+        <div>
+          <span id="syncStatus" class="status-badge">연결 정보 확인 중</span>
+          <button type="button" class="btn-opt" style="margin-left: 6px;" onclick="fetchDatabase()">🔄 새로고침</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>이름</th>
+              <th>총 투자금</th>
+              <th>예수금</th>
+              <th>보유 종목 현황</th>
+              <th>대기 종목</th>
+              <th>관리</th>
+            </tr>
+          </thead>
+          <tbody id="dataTableBody">
+            <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 40px;">데이터를 불러오는 중입니다...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
 
   <script>
-    // 현재 사용 중이신 구글 웹앱 URL
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwZmr5C_v-no6eIVErRnR-235dZPU6HJvVeiPHh64o8LAbSpKSqZM_fkyuVbgcuuThk/exec';
+    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwZmr5C_v-no6eIVErRnR-235dZPU6HJvVeiPHh64o8LAbSpKSqZM_fkyuVbgcuuThk/exec';
+    let dbData = [];
+    let activeEditingId = '';
 
-    // [기능 1] 구글 시트 데이터 불러오기 및 연결 테스트
-    function checkConnection() {
-      const statusDiv = document.getElementById('connectionStatus');
-      const logArea = document.getElementById('rawLogs');
-      
-      statusDiv.className = 'status loading';
-      statusDiv.innerText = '🔄 구글 서버에 신호 보내는 중...';
-      logArea.innerText = '데이터를 받아오는 중...';
+    function cleanNumber(str) { return Number(String(str).replace(/[^0-9.-]/g, '')) || 0; }
+    function toWon(num) { return cleanNumber(num).toLocaleString('ko-KR') + '원'; }
 
-      fetch(GAS_URL)
-        .then(res => {
-          if (!res.ok) throw new Error('HTTP 에러 발생: ' + res.status);
-          return res.json();
-        })
-        .then(data => {
-          // 성공 처리
-          statusDiv.className = 'status success';
-          statusDiv.innerText = '🟢 연결 성공! 구글 시트와 완벽히 연동됨';
-          
-          // 받아온 데이터 생으로 뿌리기
-          logArea.innerText = JSON.stringify(data, null, 2);
-        })
-        .catch(err => {
-          // 실패 처리
-          statusDiv.className = 'status fail';
-          statusDiv.innerText = '🔴 연결 실패! 통신 장애 또는 URL 주소 오류';
-          logArea.innerText = '에러 내용:\n' + err.message + '\n\n*원인 추정:\n1. 구글 웹앱 주소가 틀렸거나\n2. 구글 스크립트 배포 시 [액세스 권한: Anyone] 설정을 누락했음.';
-        });
+    function toKoreanCurrency(num) {
+      if (!num || isNaN(num)) return '';
+      if (num >= 100000000) {
+        const eok = Math.floor(num / 100000000);
+        const man = Math.floor((num % 100000000) / 10000);
+        return man > 0 ? `${eok}억 ${man.toLocaleString('ko-KR')}만 원` : `${eok}억 원`;
+      }
+      if (num >= 10000) return `${Math.floor(num / 10000).toLocaleString('ko-KR')}만 원`;
+      return num.toLocaleString('ko-KR') + '원';
     }
 
-    // [기능 2] 데이터 가짜로 1건 쏘아보기
-    function sendTestData() {
-      const nameVal = document.getElementById('testName').value.trim();
-      if (!nameVal) { alert('이름을 입력해 주세요.'); return; }
+    function formatAndGuide(input, guideId) {
+      const raw = String(input.value).replace(/[^0-9]/g, '');
+      input.value = raw ? Number(raw).toLocaleString('ko-KR') : '';
+      document.getElementById(guideId).innerText = raw ? `실시간 표기: ${toKoreanCurrency(Number(raw))}` : '';
+    }
 
-      const resultP = document.getElementById('sendResult');
-      resultP.style.color = '#64748b';
-      resultP.innerText = '📡 데이터 전송 요청 중...';
+    function updateStatus(text, isOnline) {
+      const el = document.getElementById('syncStatus');
+      if (el) {
+        el.innerText = text;
+        if(isOnline) el.classList.add('online'); else el.classList.remove('online');
+      }
+    }
 
-      // 가짜 페이로드 구성
-      const fakePayload = {
-        id: 'test_' + Date.now(),
-        name: nameVal,
-        totalMoney: 1000000,
-        cash: 500000,
-        memo: '연결 테스트용 데이터',
-        stocks: [{ name: '테스트전자', price: 50000, rate: '+1.5%', round: '1차' }],
-        waits: ['테스트바이오']
+    function addStockField(data = {}) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'stock-row';
+      let pureRate = data.rate ? data.rate.replace(/[+-%\s]/g, '') : '';
+      
+      wrapper.innerHTML = `
+        <input class="s-name" placeholder="종목명" value="${data.name || ''}">
+        <input class="s-price" placeholder="매수가" value="${data.price ? Number(data.price).toLocaleString('ko-KR') : ''}" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',')">
+        <select class="s-sign"><option value="+" ${data.rate&&data.rate.startsWith('-')?'':'selected'}>+</option><option value="-" ${data.rate&&data.rate.startsWith('-')?'selected':''}>-</option></select>
+        <input class="s-rate" placeholder="수익률" value="${pureRate}">
+        <select class="s-round">
+          <option value="1차" ${data.round==='1차'?'selected':''}>1차</option>
+          <option value="2차" ${data.round==='2차'?'selected':''}>2차</option>
+          <option value="3차" ${data.round==='3차'?'selected':''}>3차</option>
+          <option value="4차" ${data.round==='4차'?'selected':''}>4차</option>
+        </select>
+        <button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>
+      `;
+      document.getElementById('stockList').appendChild(wrapper);
+    }
+
+    function addWaitField(val = '') {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'wait-row';
+      wrapper.innerHTML = `
+        <input class="w-name" placeholder="대기 종목명" value="${val}">
+        <button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>
+      `;
+      document.getElementById('waitList').appendChild(wrapper);
+    }
+
+    function resetForm() {
+      activeEditingId = '';
+      document.getElementById('name').value = '';
+      document.getElementById('money').value = '';
+      document.getElementById('cash').value = '';
+      document.getElementById('moneyGuide').innerText = '';
+      document.getElementById('cashGuide').innerText = '';
+      document.getElementById('memo').value = '';
+      document.getElementById('stockList').innerHTML = '';
+      document.getElementById('waitList').innerHTML = '';
+      if(document.getElementById('editBanner')) document.getElementById('editBanner').style.display = 'none';
+      addStockField(); addWaitField();
+    }
+
+    function fetchDatabase() {
+      updateStatus('데이터 실시간 동기화 중...', false);
+      fetch(GAS_WEB_APP_URL)
+        .then(res => res.json())
+        .then(data => { dbData = data || []; renderUI(); updateStatus('🟢 클라우드 연결 정상', true); })
+        .catch(() => { updateStatus('🔴 동기화 실패', false); });
+    }
+
+    function checkDuplicateName() {
+      if (activeEditingId) return;
+      const targetName = document.getElementById('name').value.trim();
+      if (!targetName) return;
+      const matched = dbData.find(p => p.name === targetName);
+      if (matched) activateEditMode(matched);
+    }
+
+    function activateEditMode(person) {
+      activeEditingId = person.id || '';
+      document.getElementById('name').value = person.name || '';
+      document.getElementById('money').value = person.totalMoney ? Number(person.totalMoney).toLocaleString('ko-KR') : '';
+      document.getElementById('cash').value = person.cash ? Number(person.cash).toLocaleString('ko-KR') : '';
+      formatAndGuide(document.getElementById('money'), 'moneyGuide');
+      formatAndGuide(document.getElementById('cash'), 'cashGuide');
+      document.getElementById('memo').value = person.memo || '';
+      document.getElementById('stockList').innerHTML = '';
+      document.getElementById('waitList').innerHTML = '';
+
+      if (person.stocks && person.stocks.length) person.stocks.forEach(addStockField); else addStockField();
+      if (person.waits && person.waits.length) person.waits.forEach(addWaitField); else addWaitField();
+
+      if(document.getElementById('editBanner')) document.getElementById('editBanner').style.display = 'block';
+      document.getElementById('formSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function submitData() {
+      const name = document.getElementById('name').value.trim();
+      if (!name) { alert('투자자 이름을 입력해 주세요.'); return; }
+
+      const stocks = Array.from(document.querySelectorAll('.stock-row')).map(row => ({
+        name: row.querySelector('.s-name').value.trim(),
+        price: cleanNumber(row.querySelector('.s-price').value),
+        rate: row.querySelector('.s-sign').value + row.querySelector('.s-rate').value.replace(/[+-%\s]/g, '') + '%',
+        round: row.querySelector('.s-round').value
+      })).filter(s => s.name);
+
+      const waits = Array.from(document.querySelectorAll('.w-name')).map(input => input.value.trim()).filter(Boolean);
+
+      const payload = {
+        id: activeEditingId, name: name,
+        totalMoney: cleanNumber(document.getElementById('money').value),
+        cash: cleanNumber(document.getElementById('cash').value),
+        memo: document.getElementById('memo').value.trim() || '변동 0',
+        stocks: stocks, waits: waits
       };
 
-      fetch(GAS_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'save', person: fakePayload })
-      })
-      .then(res => res.json())
-      .then(res => {
-        if (res.success) {
-          resultP.style.color = '#15803d';
-          resultP.innerText = '✅ 전송 성공! 구글 시트에 기록되었습니다.';
-          checkConnection(); // 전송 성공 후 시트 갱신
-        } else {
-          resultP.style.color = '#b91c1c';
-          resultP.innerText = '❌ 서버 거부: ' + res.error;
-        }
-      })
-      .catch(err => {
-        resultP.style.color = '#b91c1c';
-        resultP.innerText = '❌ 네트워크 전송 실패: ' + err.message;
+      const btn = document.getElementById('saveBtn');
+      btn.disabled = true; btn.innerText = '클라우드 전송 중...';
+
+      fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'save', person: payload }) })
+        .then(res => res.json())
+        .then(res => {
+          btn.disabled = false; btn.innerText = '구글 시트에 안전하게 저장하기';
+          if(res.success) { resetForm(); fetchDatabase(); } else { alert('저장 실패: ' + res.error); }
+        })
+        .catch(() => { btn.disabled = false; btn.innerText = '구글 시트에 안전하게 저장하기'; alert('네트워크 오류발생'); });
+    }
+
+    function renderUI() {
+      const tbody = document.getElementById('dataTableBody');
+      if(!tbody) return;
+      tbody.innerHTML = '';
+      const sorted = dbData.slice().sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+
+      if (!sorted.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#64748b;">저장된 데이터가 없습니다.</td></tr>';
+        return;
+      }
+
+      sorted.forEach(p => {
+        const tr = document.createElement('tr');
+        const stocksHtml = (p.stocks || []).map(s => {
+          const cls = String(s.rate).startsWith('-') ? 'down' : 'up';
+          return `<span class="badge ${cls}">${s.name} | ${toWon(s.price)} (${s.rate}) [${s.round}]</span>`;
+        }).join('') || '-';
+
+        const waitsHtml = (p.waits || []).map(w => `<span class="badge gray">${w}</span>`).join('') || '-';
+
+        tr.innerHTML = `
+          <td style="font-weight:800; color:#0f172a;">${p.name}</td>
+          <td style="font-weight:600;">${toWon(p.totalMoney)}</td>
+          <td style="color:#475569;">${toWon(p.cash)}</td>
+          <td>${stocksHtml}</td>
+          <td>${waitsHtml}</td>
+          <td>
+            <div class="actions">
+              <button class="btn-add btn-tbl-edit" onclick='activateEditMode(${JSON.stringify(p)})'>수정</button>
+              <button class="btn-add btn-tbl-del" onclick="deleteTarget('${p.id}')">삭제</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
       });
     }
 
-    // 페이지가 열리면 자동으로 첫 연결 시험 가동
-    window.onload = checkConnection;
+    function deleteTarget(id) {
+      if(!confirm('삭제하시겠습니까?')) return;
+      fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', id: id }) })
+        .then(res => res.json()).then(res => { if(res.success) fetchDatabase(); });
+    }
+
+    window.onload = function() { resetForm(); fetchDatabase(); };
   </script>
 </body>
 </html>
