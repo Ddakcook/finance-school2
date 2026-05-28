@@ -4,92 +4,48 @@
   <base target="_top">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>재정학교 투자현황 대시보드</title>
+  <title>재정학교 대시보드</title>
   <style>
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, sans-serif; }
-    body {
-      margin: 0; padding: 0;
-      background: #f1f5f9; color: #1e293b;
-      letter-spacing: -0.03em;
-    }
-    header {
-      background: white; padding: 24px 16px;
-      border-bottom: 1px solid #e2e8f0; text-align: center;
-    }
-    header h1 { margin: 0; font-size: 24px; font-weight: 800; color: #0f172a; }
-    header p { margin: 6px 0 0; font-size: 13px; color: #64748b; }
-
-    .container {
-      max-width: 1280px; margin: 32px auto; padding: 0 20px;
-      display: grid; grid-template-columns: 460px 1fr; gap: 32px;
-      align-items: start;
-    }
-    .card {
-      background: white; border-radius: 24px; padding: 28px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 10px 15px -3px rgba(0,0,0,0.05);
-    }
-    .card h2 { margin: 0 0 20px; font-size: 18px; font-weight: 700; color: #0f172a; }
-    
-    label { display: block; margin: 16px 0 6px; font-size: 13px; font-weight: 700; color: #475569; }
-    input, select {
-      width: 100%; border: 1px solid #cbd5e1; border-radius: 12px;
-      padding: 12px 14px; font-size: 14px; outline: none; transition: all 0.2s;
-    }
-    input:focus, select:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
-    
-    .money-guide { font-size: 11px; color: #2563eb; font-weight: 700; margin-top: 4px; height: 14px; }
+    body { margin: 0; padding: 0; background: #f1f5f9; color: #1e293b; letter-spacing: -0.03em; }
+    header { background: white; padding: 20px; border-bottom: 1px solid #e2e8f0; text-align: center; }
+    header h1 { margin: 0; font-size: 22px; font-weight: 800; color: #0f172a; }
+    header p { margin: 4px 0 0; font-size: 13px; color: #64748b; }
+    .container { max-width: 1280px; margin: 24px auto; padding: 0 20px; display: grid; grid-template-columns: 460px 1fr; gap: 24px; align-items: start; }
+    .card { background: white; border-radius: 20px; padding: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
+    .card h2 { margin: 0 0 16px; font-size: 17px; font-weight: 700; }
+    label { display: block; margin: 12px 0 4px; font-size: 13px; font-weight: 700; color: #475569; }
+    input, select { width: 100%; border: 1px solid #cbd5e1; border-radius: 12px; padding: 10px 12px; font-size: 14px; outline: none; }
+    input:focus, select:focus { border-color: #2563eb; }
+    .money-guide { font-size: 12px; color: #2563eb; font-weight: 700; margin-top: 4px; min-height: 16px; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    
-    .section-title { display: flex; justify-content: space-between; align-items: center; margin: 24px 0 10px; }
+    .section-title { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 8px; }
     .section-title h3 { margin: 0; font-size: 14px; color: #334155; }
-    
     .item-list { display: grid; gap: 8px; }
-    .stock-row {
-      display: grid; grid-template-columns: 1.2fr 1fr 60px 0.8fr 70px 36px; gap: 6px;
-      align-items: center; background: #f8fafc; padding: 8px; border-radius: 12px; border: 1px solid #e2e8f0;
-    }
-    .wait-row {
-      display: grid; grid-template-columns: 1fr 36px; gap: 6px;
-      align-items: center; background: #f8fafc; padding: 8px; border-radius: 12px; border: 1px solid #e2e8f0;
-    }
-    
-    button {
-      border: 0; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s;
-    }
-    .btn-main { width: 100%; background: #2563eb; color: white; padding: 14px; font-size: 15px; margin-top: 24px; }
-    .btn-main:hover { background: #1d4ed8; }
-    .btn-main:disabled { background: #94a3b8; cursor: not-allowed; }
+    .stock-row { display: grid; grid-template-columns: 1.2fr 1fr 55px 0.8fr 65px 36px; gap: 4px; align-items: center; background: #f8fafc; padding: 6px; border-radius: 12px; border: 1px solid #e2e8f0; }
+    .wait-row { display: grid; grid-template-columns: 1fr 36px; gap: 6px; align-items: center; background: #f8fafc; padding: 6px; border-radius: 12px; border: 1px solid #e2e8f0; }
+    button { border: 0; border-radius: 12px; font-weight: 700; cursor: pointer; }
+    .btn-main { width: 100%; background: #2563eb; color: white; padding: 14px; font-size: 15px; margin-top: 20px; }
+    .btn-main:disabled { background: #94a3b8; }
     .btn-add { background: #f1f5f9; color: #475569; padding: 6px 12px; font-size: 12px; }
-    .btn-add:hover { background: #e2e8f0; }
-    .btn-del { background: #fee2e2; color: #ef4444; height: 38px; width: 36px; padding: 0; font-size: 16px; }
-    .btn-del:hover { background: #fca5a5; }
-    .btn-opt { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 14px; font-size: 13px; }
-    .btn-opt:hover { background: #edf2f7; color: #0f172a; }
-    
-    .edit-banner {
-      display: none; background: #fff7ed; border: 1px solid #ffedd5;
-      color: #ea580c; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 700; margin-bottom: 16px;
-    }
-    
-    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .status-badge { display: inline-flex; padding: 6px 12px; border-radius: 20px; background: #f1f5f9; font-size: 12px; font-weight: 700; color: #475569; }
+    .btn-del { background: #fee2e2; color: #ef4444; height: 34px; width: 34px; font-size: 16px; }
+    .btn-opt { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; padding: 6px 12px; font-size: 13px; }
+    .edit-banner { display: none; background: #fff7ed; border: 1px solid #ffedd5; color: #ea580c; padding: 10px; border-radius: 12px; font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .status-badge { display: inline-flex; padding: 6px 12px; border-radius: 20px; background: #f1f5f9; font-size: 12px; font-weight: 700; }
     .status-badge.online { background: #dcfce7; color: #166534; }
-    
     .table-container { background: white; border-radius: 16px; border: 1px solid #e2e8f0; overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; min-width: 800px; }
-    th { background: #f8fafc; padding: 14px 16px; color: #475569; font-weight: 700; border-bottom: 1px solid #e2e8f0; }
-    td { padding: 16px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
-    
-    .badge { display: inline-flex; padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 700; margin: 2px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 800px; }
+    th { background: #f8fafc; padding: 12px; color: #475569; font-weight: 700; border-bottom: 1px solid #e2e8f0; }
+    td { padding: 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+    .badge { display: inline-flex; padding: 4px 6px; border-radius: 6px; font-size: 12px; font-weight: 700; margin: 2px; }
     .badge.up { background: #fee2e2; color: #dc2626; }
     .badge.down { background: #e0f2fe; color: #0284c7; }
     .badge.gray { background: #f1f5f9; color: #475569; }
-    
-    .actions { display: flex; gap: 6px; }
-    .btn-tbl-edit { background: #eff6ff; color: #2563eb; padding: 6px 10px; font-size: 12px; }
-    .btn-tbl-del { background: #fff1f2; color: #ef4444; padding: 6px 10px; font-size: 12px; }
-    
-    @media (max-width: 1024px) { .container { grid-template-columns: 1fr; gap: 24px; } }
+    .actions { display: flex; gap: 4px; }
+    .btn-tbl-edit { background: #eff6ff; color: #2563eb; padding: 4px 8px; font-size: 12px; }
+    .btn-tbl-del { background: #fff1f2; color: #ef4444; padding: 4px 8px; font-size: 12px; }
+    @media (max-width: 1024px) { .container { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -101,8 +57,8 @@
 
   <main class="container">
     <section class="card" id="formSection">
-      <div id="editBanner" class="edit-banner">💡 수정 모드가 활성화되었습니다. 저장 시 기존 데이터가 업데이트됩니다.</div>
-      <div class="title-row" style="display: flex; justify-content: space-between; align-items: center;">
+      <div id="editBanner" class="edit-banner">💡 수정 모드 활성화됨. 저장 시 기존 데이터가 덮어씌워집니다.</div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <h2>투자 데이터 입력</h2>
         <button type="button" class="btn-add" onclick="resetForm()">입력 리셋</button>
       </div>
@@ -146,7 +102,7 @@
         <h2>전체 참가자 자산 현황</h2>
         <div>
           <span id="syncStatus" class="status-badge">연결 정보 확인 중</span>
-          <button type="button" class="btn-opt" style="margin-left: 8px;" onclick="fetchDatabase()">🔄 새로고침</button>
+          <button type="button" class="btn-opt" style="margin-left: 6px;" onclick="fetchDatabase()">🔄 새로고침</button>
         </div>
       </div>
 
@@ -163,7 +119,7 @@
             </tr>
           </thead>
           <tbody id="dataTableBody">
-            <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 40px;">데이터를 안전하게 불러오는 중입니다...</td></tr>
+            <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 40px;">데이터를 불러오는 중입니다...</td></tr>
           </tbody>
         </table>
       </div>
@@ -198,32 +154,27 @@
     function updateStatus(text, isOnline) {
       const el = document.getElementById('syncStatus');
       el.innerText = text;
-      if(isOnline) el.classList.add('online');
-      else el.classList.remove('online');
+      if(isOnline) el.classList.add('online'); else el.classList.remove('online');
     }
 
     function addStockField(data = {}) {
       const wrapper = document.createElement('div');
       wrapper.className = 'stock-row';
-
-      const nameInp = `<input class="s-name" placeholder="종목명" value="${data.name || ''}">`;
-      const priceInp = `<input class="s-price" placeholder="매수가" value="${data.price ? Number(data.price).toLocaleString('ko-KR') : ''}" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',')">`;
-      const signSel = `<select class="s-sign"><option value="+" ${data.rate && data.rate.startsWith('-') ? '' : 'selected'}>+</option><option value="-" ${data.rate && data.rate.startsWith('-') ? 'selected' : ''}>-</option></select>`;
+      let pureRate = data.rate ? data.rate.replace(/[+-%\s]/g, '') : '';
       
-      let pureRate = '';
-      if (data.rate) pureRate = data.rate.replace(/[+-%\s]/g, '');
-      const rateInp = `<input class="s-rate" placeholder="수익률" value="${pureRate}">`;
-      
-      const roundSel = `<select class="s-round">
-        <option value="1차" ${data.round === '1차' ? 'selected' : ''}>1차</option>
-        <option value="2차" ${data.round === '2차' ? 'selected' : ''}>2차</option>
-        <option value="3차" ${data.round === '3차' ? 'selected' : ''}>3차</option>
-        <option value="4차" ${data.round === '4차' ? 'selected' : ''}>4차</option>
-      </select>`;
-      
-      const delBtn = `<button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>`;
-
-      wrapper.innerHTML = nameInp + priceInp + signSel + rateInp + roundSel + delBtn;
+      wrapper.innerHTML = `
+        <input class="s-name" placeholder="종목명" value="${data.name || ''}">
+        <input class="s-price" placeholder="매수가" value="${data.price ? Number(data.price).toLocaleString('ko-KR') : ''}" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',')">
+        <select class="s-sign"><option value="+" ${data.rate&&data.rate.startsWith('-')?'':'selected'}>+</option><option value="-" ${data.rate&&data.rate.startsWith('-')?'selected':''}>-</option></select>
+        <input class="s-rate" placeholder="수익률" value="${pureRate}">
+        <select class="s-round">
+          <option value="1차" ${data.round==='1차'?'selected':''}>1차</option>
+          <option value="2차" ${data.round==='2차'?'selected':''}>2차</option>
+          <option value="3차" ${data.round==='3차'?'selected':''}>3차</option>
+          <option value="4차" ${data.round==='4차'?'selected':''}>4차</option>
+        </select>
+        <button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>
+      `;
       document.getElementById('stockList').appendChild(wrapper);
     }
 
@@ -255,15 +206,8 @@
       updateStatus('데이터 실시간 동기화 중...', false);
       fetch(GAS_WEB_APP_URL)
         .then(res => res.json())
-        .then(data => {
-          dbData = data || [];
-          renderUI();
-          updateStatus('🟢 클라우드 연결 정상', true);
-        })
-        .catch(err => {
-          updateStatus('🔴 동기화 실패', false);
-          alert('구글 데이터베이스 연동 실패. 웹앱 배포 상태를 점검하세요.');
-        });
+        .then(data => { dbData = data || []; renderUI(); updateStatus('🟢 클라우드 연결 정상', true); })
+        .catch(() => { updateStatus('🔴 동기화 실패', false); });
     }
 
     function checkDuplicateName() {
@@ -282,24 +226,19 @@
       formatAndGuide(document.getElementById('money'), 'moneyGuide');
       formatAndGuide(document.getElementById('cash'), 'cashGuide');
       document.getElementById('memo').value = person.memo || '';
-      
       document.getElementById('stockList').innerHTML = '';
       document.getElementById('waitList').innerHTML = '';
 
-      if (person.stocks && person.stocks.length) person.stocks.forEach(addStockField);
-      else addStockField();
-
-      if (person.waits && person.waits.length) person.waits.forEach(addWaitField);
-      else addWaitField();
+      if (person.stocks && person.stocks.length) person.stocks.forEach(addStockField); else addStockField();
+      if (person.waits && person.waits.length) person.waits.forEach(addWaitField); else addWaitField();
 
       document.getElementById('editBanner').style.display = 'block';
       document.getElementById('formSection').scrollIntoView({ behavior: 'smooth' });
-      setTimeout(() => document.getElementById('name').focus(), 500);
     }
 
     function submitData() {
       const name = document.getElementById('name').value.trim();
-      if (!name) { alert('투자자 이름을 필수 입력해야 합니다.'); return; }
+      if (!name) { alert('투자자 이름을 입력해 주세요.'); return; }
 
       const stocks = Array.from(document.querySelectorAll('.stock-row')).map(row => ({
         name: row.querySelector('.s-name').value.trim(),
@@ -311,29 +250,23 @@
       const waits = Array.from(document.querySelectorAll('.w-name')).map(input => input.value.trim()).filter(Boolean);
 
       const payload = {
-        id: activeEditingId,
-        name: name,
+        id: activeEditingId, name: name,
         totalMoney: cleanNumber(document.getElementById('money').value),
         cash: cleanNumber(document.getElementById('cash').value),
         memo: document.getElementById('memo').value.trim() || '변동 0',
-        stocks: stocks,
-        waits: waits
+        stocks: stocks, waits: waits
       };
 
       const btn = document.getElementById('saveBtn');
-      btn.disabled = true; btn.innerText = '데이터 암호화 및 클라우드 전송 중...';
+      btn.disabled = true; btn.innerText = '클라우드 전송 중...';
 
       fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'save', person: payload }) })
         .then(res => res.json())
         .then(res => {
           btn.disabled = false; btn.innerText = '구글 시트에 안전하게 저장하기';
-          if(res.success) { resetForm(); fetchDatabase(); } 
-          else { alert('서버 거부 에러: ' + res.error); }
+          if(res.success) { resetForm(); fetchDatabase(); } else { alert('저장 실패: ' + res.error); }
         })
-        .catch(() => {
-          btn.disabled = false; btn.innerText = '구글 시트에 안전하게 저장하기';
-          alert('네트워크 장애가 발생했습니다. 잠시 후 다시 시도해 주세요.');
-        });
+        .catch(() => { btn.disabled = false; btn.innerText = '구글 시트에 안전하게 저장하기'; alert('네트워크 오류발생'); });
     }
 
     function renderUI() {
@@ -342,19 +275,18 @@
       const sorted = dbData.slice().sort((a, b) => a.name.localeCompare(b.name, 'ko'));
 
       if (!sorted.length) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#64748b;">현재 저장된 정보가 없습니다.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#64748b;">저장된 데이터가 없습니다.</td></tr>';
         return;
       }
 
       sorted.forEach(p => {
         const tr = document.createElement('tr');
-        
         const stocksHtml = (p.stocks || []).map(s => {
           const cls = String(s.rate).startsWith('-') ? 'down' : 'up';
           return `<span class="badge ${cls}">${s.name} | ${toWon(s.price)} (${s.rate}) [${s.round}]</span>`;
-        }).join('') || '<span style="color:#94a3b8;">-</span>';
+        }).join('') || '-';
 
-        const waitsHtml = (p.waits || []).map(w => `<span class="badge gray">${w}</span>`).join('') || '<span style="color:#94a3b8;">-</span>';
+        const waitsHtml = (p.waits || []).map(w => `<span class="badge gray">${w}</span>`).join('') || '-';
 
         tr.innerHTML = `
           <td style="font-weight:800; color:#0f172a;">${p.name}</td>
@@ -374,11 +306,9 @@
     }
 
     function deleteTarget(id) {
-      if(!confirm('해당 투자자 데이터를 영구 삭제하시겠습니까?')) return;
-      updateStatus('데이터베이스 삭제 요청 중...', false);
+      if(!confirm('삭제하시겠습니까?')) return;
       fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', id: id }) })
-        .then(res => res.json())
-        .then(res => { if(res.success) fetchDatabase(); });
+        .then(res => res.json()).then(res => { if(res.success) fetchDatabase(); });
     }
 
     window.onload = function() { resetForm(); fetchDatabase(); };
