@@ -284,8 +284,8 @@
   </main>
 
   <script>
-    // ⚠️ 중요: 아래 주소 영역에 아까 구글에서 최종 발급받은 '새 버전 웹앱 주소'를 통째로 채워 넣으세요.
-    const GAS_WEB_APP_URL = '여기에_복사한_구글_웹앱_주소를_넣으세요';
+    // 아까 전달해주신 실제 작동하는 구글 웹앱 URL 주소입니다.
+    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwZmr5C_v-no6eIVErRnR-235dZPU6HJvVeiPHh64o8LAbSpKSqZM_fkyuVbgcuuThk/exec';
 
     let people = [];
     let currentId = ''; 
@@ -441,7 +441,7 @@
         })
         .catch(error => {
           setStatus('불러오기 실패');
-          alert('구글 시트 연동 실패: ' + error.message + '\n구글 웹앱 배포 및 URL 주소를 다시 확인해 주세요.');
+          alert('구글 시트 연동 실패: ' + error.message);
         });
     }
 
@@ -533,7 +533,7 @@
         document.getElementById('saveBtn').disabled = false;
         document.getElementById('saveBtn').innerText = '저장하기';
         setStatus('저장 실패');
-        alert('통신 에러가 발생했습니다.\n구글 웹앱 권한 설정을 "Anyone"으로 하셨는지 확인해 주세요.');
+        alert('통신 에러가 발생했습니다.');
       });
     }
 
