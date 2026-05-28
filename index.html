@@ -1,641 +1,789 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>재정학교 — 투자 현황</title>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>재정학교 투자현황 입력 시스템 (시트 실시간 연동)</title>
   <style>
     :root {
-      --bg: #0a0a0f;
-      --surface: #12121a;
-      --surface2: #1a1a26;
-      --border: rgba(255,255,255,0.07);
-      --border2: rgba(255,255,255,0.12);
-      --text: #f0eff5;
-      --muted: #7b7a8e;
-      --accent: #b8a9ff;
-      --accent2: #7c6ff7;
-      --green: #52d68a;
-      --red: #ff6b6b;
-      --amber: #ffc547;
-      --teal: #42d4c8;
+      --bg: #f4f6fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --line: #e5e7eb;
+      --danger: #ef4444;
+      --good: #dcfce7;
+      --bad: #fee2e2;
+      --wait: #fef3c7;
+      --accent: #6366f1;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    * { box-sizing: border-box; }
+
     body {
-      background: var(--bg);
+      margin: 0;
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 45%, #ecfeff 100%);
       color: var(--text);
-      font-family: 'Noto Sans KR', sans-serif;
-      font-weight: 300;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(124,111,247,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(124,111,247,0.03) 1px, transparent 1px);
-      background-size: 60px 60px;
-      pointer-events: none;
-      z-index: 0;
-    }
-    body::after {
-      content: '';
-      position: fixed;
-      top: -200px;
-      right: -100px;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(124,111,247,0.08) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
     }
 
     header {
+      padding: 28px 20px 18px;
+      text-align: center;
       position: relative;
-      z-index: 10;
-      padding: 48px 60px 32px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 24px;
     }
-    .logo-area { display: flex; flex-direction: column; gap: 6px; }
-    .logo-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      opacity: 0.8;
+
+    header h1 {
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: -0.04em;
     }
-    .logo-title {
-      font-family: 'Instrument Serif', serif;
-      font-size: 40px;
-      line-height: 1;
+
+    header p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .config-trigger-wrap {
+      position: absolute;
+      top: 24px;
+      right: 40px;
+    }
+    
+    .btn-config {
+      background: #fff;
+      border: 1px solid var(--line);
       color: var(--text);
-      letter-spacing: -0.02em;
+      padding: 8px 14px;
+      font-size: 13px;
     }
-    .logo-title em { font-style: italic; color: var(--accent); }
-    .header-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-    .last-updated { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); }
-    .refresh-btn {
+
+    .container {
+      width: min(1280px, calc(100% - 32px));
+      margin: 0 auto 40px;
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(229, 231, 235, 0.9);
+      border-radius: 22px;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+      padding: 22px;
+      backdrop-filter: blur(10px);
+    }
+
+    .section-title {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      background: transparent;
-      border: 1px solid var(--border2);
-      border-radius: 6px;
-      color: var(--muted);
-      font-family: 'Noto Sans KR', sans-serif;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
+      justify-content: space-between;
+      margin-bottom: 14px;
     }
-    .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .refresh-btn svg { width: 14px; height: 14px; }
 
-    .summary-strip { position: relative; z-index: 10; display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--border); }
-    .summary-item { padding: 24px 32px; border-right: 1px solid var(--border); }
-    .summary-item:last-child { border-right: none; }
-    .summary-label { font-size: 11px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 8px; }
-    .summary-value { font-size: 26px; font-weight: 500; color: var(--text); line-height: 1; }
-    .summary-value.accent { color: var(--accent); }
-    .summary-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .section-title h2 {
+      margin: 0;
+      font-size: 19px;
+      letter-spacing: -0.03em;
+    }
 
-    main { position: relative; z-index: 10; padding: 40px 60px 80px; }
-    .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-    .section-title { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); }
-    .section-count { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); background: var(--surface2); border: 1px solid var(--border); padding: 2px 10px; border-radius: 20px; }
-    .section-line { flex: 1; height: 1px; background: var(--border); }
+    label {
+      display: block;
+      margin: 14px 0 7px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #374151;
+    }
 
-    .members-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; margin-bottom: 60px; }
-    .member-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.2s, transform 0.2s; cursor: pointer; }
-    .member-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .member-card-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
-    .member-rank { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.1em; }
-    .member-name { font-size: 18px; font-weight: 500; color: var(--text); margin-top: 4px; }
-    .member-total { text-align: right; }
-    .member-total-label { font-size: 10px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; }
-    .member-total-value { font-size: 20px; font-weight: 500; color: var(--accent); margin-top: 2px; font-family: 'IBM Plex Mono', monospace; }
-    .member-total-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .member-card-body { padding: 16px 24px 20px; }
-    .holdings-label { font-size: 10px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
-    .holdings-list { display: flex; flex-direction: column; gap: 6px; }
-    .holding-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: var(--surface2); border-radius: 6px; transition: background 0.15s; }
-    .holding-row:hover { background: rgba(124,111,247,0.08); }
-    .holding-name { font-size: 13px; font-weight: 400; color: var(--text); flex: 1; }
-    .holding-price { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); margin: 0 12px; }
-    .holding-right { display: flex; align-items: center; gap: 8px; }
-    .holding-pnl { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; }
-    .holding-pnl.pos { color: var(--green); }
-    .holding-pnl.neg { color: var(--red); }
-    .holding-stage { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; }
-    .stage-1 { background: rgba(66,212,200,0.12); color: var(--teal); }
-    .stage-2 { background: rgba(184,169,255,0.12); color: var(--accent); }
-    .stage-3 { background: rgba(255,197,71,0.12); color: var(--amber); }
-    .watchlist-section { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
-    .watchlist-label { font-size: 10px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 8px; }
-    .watchlist-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-    .watchlist-tag { font-size: 11px; padding: 3px 8px; background: transparent; border: 1px solid var(--border2); border-radius: 4px; color: var(--muted); }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 12px 13px;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+    }
 
-    .popularity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-    .stock-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; display: flex; align-items: center; gap: 14px; transition: border-color 0.2s; }
-    .stock-item:hover { border-color: var(--accent2); }
-    .stock-rank-num { font-family: 'Instrument Serif', serif; font-size: 28px; color: var(--border2); min-width: 32px; line-height: 1; }
-    .stock-info { flex: 1; min-width: 0; }
-    .stock-name { font-size: 14px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .stock-holders { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 3px; }
-    .stock-bar { width: 100%; height: 3px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
-    .stock-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 2px; transition: width 0.6s ease; }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
 
-    .setup-banner { background: linear-gradient(135deg, rgba(124,111,247,0.1), rgba(66,212,200,0.05)); border: 1px solid rgba(124,111,247,0.25); border-radius: 12px; padding: 28px 32px; margin-bottom: 40px; display: flex; align-items: center; gap: 24px; }
-    .setup-icon { width: 48px; height: 48px; background: rgba(124,111,247,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .setup-content { flex: 1; }
-    .setup-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
-    .setup-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
-    .setup-btn { padding: 10px 20px; background: var(--accent2); border: none; border-radius: 7px; color: white; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: opacity 0.2s; text-decoration: none; }
-    .setup-btn:hover { opacity: 0.85; }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
 
-    /* MODAL EXTRAS FOR INPUT & EDITING */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; display: none; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
-    .modal-overlay.open { display: flex; }
-    .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; padding: 32px; width: 95%; max-width: 560px; position: relative; max-height: 85vh; overflow-y: auto; }
-    .modal-close { position: absolute; top: 16px; right: 16px; background: transparent; border: 1px solid var(--border); border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); font-size: 16px; }
-    .modal-title { font-family: 'Instrument Serif', serif; font-size: 24px; margin-bottom: 4px; color: var(--text); }
-    .modal-subtitle { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
-    .modal-field { margin-bottom: 14px; }
-    .modal-label { font-size: 11px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; }
-    .modal-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 10px 14px; color: var(--text); font-size: 14px; outline: none; }
-    .modal-input:focus { border-color: var(--accent); }
-    
-    .dynamic-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr 0.8fr 36px; gap: 6px; margin-bottom: 6px; align-items: center; }
-    .dynamic-wait-row { display: grid; grid-template-columns: 1fr 36px; gap: 6px; margin-bottom: 6px; align-items: center; }
-    .btn-row-add { background: var(--surface2); border: 1px dashed var(--border2); color: var(--accent); padding: 8px; width: 100%; border-radius: 6px; cursor: pointer; font-size: 12px; margin-bottom: 14px; text-align: center; }
-    .btn-row-del { background: rgba(255,107,107,0.15); color: var(--red); border: none; height: 34px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; }
-    
-    .modal-save { width: 100%; padding: 14px; background: var(--accent2); border: none; border-radius: 8px; color: white; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 10px; }
-    .modal-save:disabled { background: var(--border2); color: var(--muted); cursor: not-allowed; }
-    .modal-note { margin-top: 16px; padding: 12px; background: rgba(124,111,247,0.05); border-left: 2px solid var(--accent2); border-radius: 0 6px 6px 0; font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .stock-row {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1.15fr 0.7fr 42px;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
 
-    .loading-state { text-align: center; padding: 60px 0; color: var(--muted); width: 100%; grid-column: 1 / -1; }
-    .spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .fade-in { opacity: 0; animation: fadeIn 0.4s ease forwards; }
-    @keyframes fadeIn { to { opacity: 1; } }
+    .rate-input-wrap {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 6px;
+    }
+
+    .stock-rate-sign {
+      padding-left: 8px;
+      padding-right: 8px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .wait-row {
+      display: grid;
+      grid-template-columns: 1fr 42px;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 13px;
+      padding: 12px 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.18s;
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      margin-top: 16px;
+      font-size: 15px;
+    }
+
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-primary:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; }
+
+    .btn-sub {
+      background: #eff6ff;
+      color: var(--primary);
+      border: 1px solid #bfdbfe;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .btn-danger {
+      background: #fff1f2;
+      color: var(--danger);
+      padding: 0;
+      height: 42px;
+    }
+
+    .btn-copy {
+      background: #111827;
+      color: white;
+      white-space: nowrap;
+    }
+
+    .btn-clear {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      background: #eef2ff;
+      color: #3730a3;
+      border: 1px solid #c7d2fe;
+      padding: 10px 13px;
+    }
+
+    .tab.active {
+      background: #3730a3;
+      color: white;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .summary-box {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      padding: 15px;
+    }
+
+    .summary-box .label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .summary-box .value {
+      margin-top: 6px;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .output-area {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    pre {
+      margin: 0;
+      min-height: 280px;
+      white-space: pre-wrap;
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 18px;
+      border-radius: 18px;
+      font-family: "D2Coding", Consolas, monospace;
+      font-size: 14px;
+      line-height: 1.65;
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      background: white;
+      font-size: 13px;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 12px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #374151;
+      font-size: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 12px;
+      margin: 2px;
+    }
+
+    .plus { background: var(--good); color: #166534; }
+    .minus { background: var(--bad); color: #991b1b; }
+    .waiting { background: var(--wait); color: #92400e; }
+
+    .hidden { display: none; }
+
+    .small-help {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 8px;
+    }
+
+    /* 설정용 모달 스타일 */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      padding: 24px;
+      border-radius: 20px;
+      width: min(500px, 90%);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 980px) {
+      .container { grid-template-columns: 1fr; }
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
+      .stock-row { grid-template-columns: 1fr 1fr; }
+      .stock-row button { grid-column: span 2; }
+      .config-trigger-wrap { position: static; text-align: center; margin-top: 10px; }
+    }
   </style>
 </head>
 <body>
-
-<header>
-  <div class="logo-area">
-    <div class="logo-label">재정학교 // Investment Tracker</div>
-    <h1 class="logo-title">포트폴리오 <em>현황</em></h1>
-  </div>
-  <div class="header-meta">
-    <div class="last-updated" id="lastUpdated">마지막 업데이트: —</div>
-    <div style="display: flex; gap: 8px;">
-      <button class="refresh-btn" onclick="openInputModal()" style="border-color: var(--accent); color: var(--accent);">+ 데이터 등록/수정</button>
-      <button class="refresh-btn" onclick="loadData()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M1 4v6h6M23 20v-6h-6"/>
-          <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
-        </svg>
-        새로고침
-      </button>
+  <header>
+    <h1>재정학교 투자현황 입력 시스템</h1>
+    <p>각자 편하게 입력하면 구글 시트 DB와 실시간 연동되어 카톡방 공유용 양식과 전체 현황이 자동 정리됩니다.</p>
+    <div class="config-trigger-wrap">
+      <button class="btn-config" onclick="openConfig()">⚙️ 시트 주소 변경</button>
     </div>
-  </div>
-</header>
+  </header>
 
-<div class="summary-strip">
-  <div class="summary-item">
-    <div class="summary-label">TOTAL MEMBERS</div>
-    <div class="summary-value accent" id="sumMembers">—</div>
-    <div class="summary-sub">참여 중인 투자자</div>
-  </div>
-  <div class="summary-item">
-    <div class="summary-label">TOTAL AUM</div>
-    <div class="summary-value" id="sumAum">—</div>
-    <div class="summary-sub">총 운용 자산</div>
-  </div>
-  <div class="summary-item">
-    <div class="summary-label">TOTAL HOLDINGS</div>
-    <div class="summary-value" id="sumHoldings">—</div>
-    <div class="summary-sub">총 보유 종목 수</div>
-  </div>
-  <div class="summary-item">
-    <div class="summary-label">TOP STOCK</div>
-    <div class="summary-value" id="sumTopStock">—</div>
-    <div class="summary-sub">가장 많이 보유한 종목</div>
-  </div>
-</div>
-
-<main>
-  <div class="setup-banner" id="setupBanner">
-    <div class="setup-icon">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b8a9ff" stroke-width="1.5">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-        <polyline points="14 2 14 8 20 8"/>
-        <line x1="8" y1="13" x2="16" y2="13"/>
-        <line x1="8" y1="17" x2="16" y2="17"/>
-      </svg>
-    </div>
-    <div class="setup-content">
-      <div class="setup-title">Google Sheets 웹앱 연동하기</div>
-      <div class="setup-desc">
-        구글 시트 배포 후 발급받은 배포용 웹앱 URL(GAS)을 우측 설정 메뉴에 입력해주시면 대시보드와 실시간 양방향 연동이 활성화됩니다.
+  <main class="container">
+    <section class="card">
+      <div class="section-title">
+        <h2>내 투자현황 입력</h2>
+        <button class="btn-clear" onclick="resetForm()">초기화</button>
       </div>
-    </div>
-    <button class="setup-btn" onclick="openSettings()">⚙ 연동 설정</button>
-  </div>
 
-  <div class="section-header">
-    <h2 class="section-title">멤버 현황</h2>
-    <span class="section-count" id="memberCount">0명</span>
-    <div class="section-line"></div>
-  </div>
-  <div class="members-grid" id="membersGrid"></div>
-
-  <div class="section-header" style="margin-top: 20px;">
-    <h2 class="section-title">인기 종목</h2>
-    <span class="section-count">보유 현황</span>
-    <div class="section-line"></div>
-  </div>
-  <div class="popularity-grid" id="popularityGrid"></div>
-</main>
-
-<footer>
-  <div class="footer-text">재정학교 © 2026 — Portfolio Dashboard</div>
-  <div class="footer-links">
-    <a href="https://github.com" class="footer-link" id="githubLink">GitHub →</a>
-    <a href="#" class="footer-link" onclick="openSettings(); return false;">Settings</a>
-  </div>
-</footer>
-
-<div class="modal-overlay" id="settingsModal" onclick="if(event.target===this)closeSettings()">
-  <div class="modal">
-    <button class="modal-close" onclick="closeSettings()">✕</button>
-    <div class="modal-title">시스템 연동 설정</div>
-    <div class="modal-subtitle">구글 스프레드시트 Apps Script 웹앱 연동 주소 입력</div>
-
-    <div class="modal-field">
-      <div class="modal-label">GOOGLE APPS SCRIPT WEB APP URL</div>
-      <input class="modal-input" id="gasWebAppUrl" placeholder="https://script.google.com/macros/s/.../exec" />
-    </div>
-    <div class="modal-field">
-      <div class="modal-label">GITHUB REPO URL (선택)</div>
-      <input class="modal-input" id="githubUrl" placeholder="https://github.com/your-id/portfolio" />
-    </div>
-    <button class="modal-save" onclick="saveSettings()">설정 저장 및 데이터 동기화</button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="inputModal" onclick="if(event.target===this)closeInputModal()">
-  <div class="modal">
-    <button class="modal-close" onclick="closeInputModal()">✕</button>
-    <div class="modal-title" id="inputModalTitle">투자 데이터 등록 / 수정</div>
-    <div class="modal-subtitle">이름 입력 시 기존 참가자는 정보를 자동으로 조회하여 덮어씌웁니다.</div>
-
-    <input type="hidden" id="editPersonId" value="">
-    <div class="modal-field">
-      <div class="modal-label">투자자 이름</div>
-      <input class="modal-input" id="formName" placeholder="이름을 정확히 입력하세요" onblur="checkExistingUser()">
-    </div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-      <div class="modal-field">
-        <div class="modal-label">총 투자금액 (원)</div>
-        <input class="modal-input" id="formTotal" type="number" placeholder="예: 20000000">
-      </div>
-      <div class="modal-field">
-        <div class="modal-label">보유 예수금 (원)</div>
-        <input class="modal-input" id="formCash" type="number" placeholder="예: 5000000">
-      </div>
-    </div>
-    <div class="modal-field">
-      <div class="modal-label">기타 변동 및 메모</div>
-      <input class="modal-input" id="formMemo" placeholder="특이사항 없을 시 '변동 0' 기록">
-    </div>
-
-    <div class="modal-label" style="margin-top: 16px; display:flex; justify-content:space-between; align-items:center;">
-      <span>📈 보유 종목 현황</span>
-      <button type="button" class="refresh-btn" style="padding: 2px 8px; font-size:11px;" onclick="addStockFormRow()">+ 종목 추가</button>
-    </div>
-    <div id="formStockContainer" style="margin-bottom: 12px;"></div>
-
-    <div class="modal-label" style="margin-top: 16px; display:flex; justify-content:space-between; align-items:center;">
-      <span>⏳ 진입 대기 종목</span>
-      <button type="button" class="refresh-btn" style="padding: 2px 8px; font-size:11px;" onclick="addWaitFormRow()">+ 대기 추가</button>
-    </div>
-    <div id="formWaitContainer" style="margin-bottom: 16px;"></div>
-
-    <button class="modal-save" id="btnSubmitData" onclick="submitData()">구글 시트에 클라우드 저장</button>
-  </div>
-</div>
-
-<script>
-// ─── CONFIG & STATE MANAGEMENT ──────────────────────────────────
-const STORAGE_KEY = 'jaejung_finance_config_v2';
-let config = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-let dbData = [];
-
-// ─── DEMO DATA (초기 연결 전용 더미셋) ─────────────────────────
-const DEMO_DATA = [
-  { id:"demo1", rank: 1, name: '오지석', total: 20000000, cash: 5000000, memo:"변동 0", holdings: [{ name: '한화오션', price: 128987, rate: "-5.0%", stage: "3차" }, { name: '현대차', price: 542375, rate: "+20.0%", stage: "2차" }], waits: ['LS머트리얼즈', '에스피지'] },
-  { id:"demo2", rank: 2, name: '곽병석', total: 30000000, cash: 9999882, memo:"변동 0", holdings: [{ name: '현대차', price: 529438, rate: "+23.44%", stage: "2차" }, { name: '한화오션', price: 128639, rate: "-4.76%", stage: "3차" }], waits: ['한미반도체'] }
-];
-
-// ─── UTILS ──────────────────────────────────────────────────────
-function formatWon(n) {
-  if (n >= 100000000) return (n / 100000000).toFixed(1) + '억';
-  if (n >= 10000) return Math.round(n / 10000) + '만';
-  return n.toLocaleString();
-}
-
-// ─── UI RENDER ENGINE ───────────────────────────────────────────
-function renderAll(data) {
-  const grid = document.getElementById('membersGrid');
-  if(!data || data.length === 0) {
-    grid.innerHTML = '<div class="loading-state"><p>데이터가 비어있습니다.</p></div>';
-    return;
-  }
-  
-  // 가나다 이름순 정렬 및 랭크 재매핑
-  const sorted = data.slice().sort((a,b) => a.name.localeCompare(b.name, 'ko'));
-  sorted.forEach((item, index) => { item.rank = index + 1; });
-
-  grid.innerHTML = sorted.map(m => {
-    const holdingsHTML = (m.holdings || []).map(h => {
-      const isMinus = String(h.rate).includes('-');
-      const cls = isMinus ? 'neg' : 'pos';
-      const stageNum = String(h.stage).replace(/[^0-9]/g, '') || '1';
-      return `
-        <div class="holding-row">
-          <span class="holding-name">${h.name}</span>
-          <span class="holding-price">${Number(h.price).toLocaleString()}</span>
-          <div class="holding-right">
-            <span class="holding-pnl ${cls}">${h.rate}</span>
-            <span class="holding-stage stage-${stageNum}">${h.stage || '1차'}</span>
-          </div>
-        </div>`;
-    }).join('') || '<div style="color:var(--muted); font-size:12px; text-align:center; padding:6px;">보유 종목 없음</div>';
-
-    const watchHTML = (m.waits || []).length > 0 ? `
-      <div class="watchlist-section">
-        <div class="watchlist-label">대기 WATCHLIST</div>
-        <div class="watchlist-tags">
-          ${m.waits.map(w => `<span class="watchlist-tag">${w}</span>`).join('')}
+      <div class="row">
+        <div>
+          <label>순번</label>
+          <input id="orderNo" type="number" inputmode="numeric" placeholder="예: 1" />
         </div>
-      </div>` : '';
-
-    return `
-      <div class="member-card fade-in" onclick='openEditMode(${JSON.stringify(m)})'>
-        <div class="member-card-header">
-          <div>
-            <div class="member-rank"># ${m.rank.toString().padStart(2, '0')}</div>
-            <div class="member-name">${m.name}</div>
-          </div>
-          <div class="member-total">
-            <div class="member-total-label">TOTAL</div>
-            <div class="member-total-value">${formatWon(m.total || 0)}</div>
-            <div class="member-total-sub">예수금 ${formatWon(m.cash || 0)}</div>
-          </div>
+        <div>
+          <label>이름</label>
+          <input id="name" type="text" placeholder="예: 홍길동" />
         </div>
-        <div class="member-card-body">
-          <div class="holdings-label">HOLDINGS · ${(m.holdings || []).length}종목</div>
-          <div class="holdings-list">${holdingsHTML}</div>
-          ${watchHTML}
-        </div>
-      </div>`;
-  }).join('');
-
-  // 인기종목 계산 및 요약 데이터 세팅
-  renderPopularityAndSummary(sorted);
-}
-
-function renderPopularityAndSummary(data) {
-  const stockCount = {};
-  let totalAum = 0;
-  let totalHoldingsCount = 0;
-
-  data.forEach(m => {
-    totalAum += (Number(m.total) || 0);
-    const hList = m.holdings || [];
-    totalHoldingsCount += hList.length;
-    hList.forEach(h => { stockCount[h.name] = (stockCount[h.name] || 0) + 1; });
-  });
-
-  const sortedStocks = Object.entries(stockCount).sort((a,b) => b[1]-a[1]);
-  const max = sortedStocks[0]?.[1] || 1;
-
-  document.getElementById('popularityGrid').innerHTML = sortedStocks.map(([name, count], i) => `
-    <div class="stock-item">
-      <div class="stock-rank-num">${i+1}</div>
-      <div class="stock-info">
-        <div class="stock-name">${name}</div>
-        <div class="stock-holders">${count}명 보유</div>
-        <div class="stock-bar"><div class="stock-bar-fill" style="width:${(count/max*100).toFixed(0)}%"></div></div>
       </div>
-    </div>`).join('') || '<div class="loading-state"><p>집계할 데이터가 없습니다.</p></div>';
 
-  document.getElementById('sumMembers').textContent = data.length + '명';
-  document.getElementById('sumAum').textContent = formatWon(totalAum);
-  document.getElementById('sumHoldings').textContent = totalHoldingsCount + '개';
-  document.getElementById('sumTopStock').textContent = sortedStocks[0]?.[0] || '—';
-  document.getElementById('memberCount').textContent = data.length + '명';
-  document.getElementById('lastUpdated').textContent = '마지막 업데이트: ' + new Date().toLocaleString('ko-KR');
-}
+      <div class="row">
+        <div>
+          <label>총 투자금</label>
+          <input id="totalMoney" type="text" inputmode="numeric" placeholder="예: 60000000" oninput="formatMoneyInput(this)" />
+        </div>
+        <div>
+          <label>예수금</label>
+          <input id="cash" type="text" inputmode="numeric" placeholder="예: 1100000" oninput="formatMoneyInput(this)" />
+        </div>
+      </div>
 
-// ─── DATA SYSTEM CODE (통신 엔진 기반) ──────────────────────────
-function loadData() {
-  const grid = document.getElementById('membersGrid');
-  grid.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>클라우드 서버에서 연결 정보 조회 중...</p></div>';
+      <label>변동 / 추가 메모</label>
+      <input id="memo" type="text" placeholder="미입력 시 자동으로 '변동 0' 입력" />
 
-  if (config.gasWebAppUrl) {
-    document.getElementById('setupBanner').style.display = 'none';
-    fetch(config.gasWebAppUrl)
-      .then(res => {
-        if(!res.ok) throw new Error();
-        return res.json();
-      })
-      .then(data => {
-        dbData = data || [];
-        renderAll(dbData);
-      })
-      .catch(() => {
-        grid.innerHTML = `<div class="loading-state"><p style="color:var(--red)">⚠ 구글 웹앱 URL 연동 실패. 주소 확인 및 Apps Script의 CORS 설정을 체크하세요.</p></div>`;
-      });
-  } else {
-    document.getElementById('setupBanner').style.display = 'flex';
-    setTimeout(() => { dbData = DEMO_DATA; renderAll(DEMO_DATA); }, 400);
-  }
-}
+      <label>매수 종목</label>
+      <div id="stockList"></div>
+      <button class="btn-sub" onclick="addStockRow()">+ 매수 종목 추가</button>
 
-// 입력 폼 제어 및 동적 필드 로직
-function addStockFormRow(data = {}) {
-  const container = document.getElementById('formStockContainer');
-  const div = document.createElement('div');
-  div.className = 'dynamic-row';
-  
-  const pureRate = data.rate ? data.rate.replace(/[+-%\s]/g, '') : '';
-  const isMinus = data.rate && data.rate.includes('-');
+      <label>대기 종목</label>
+      <div id="waitList"></div>
+      <button class="btn-sub" onclick="addWaitRow()">+ 대기 종목 추가</button>
 
-  div.innerHTML = `
-    <input class="modal-input s-name" placeholder="종목명" value="${data.name || ''}" />
-    <input class="modal-input s-price" type="number" placeholder="매수가" value="${data.price || ''}" />
-    <select class="modal-input s-sign" style="background:var(--surface2);">
-      <option value="+" ${isMinus?'':'selected'}>+</option>
-      <option value="-" ${isMinus?'selected':''}>-</option>
-    </select>
-    <input class="modal-input s-rate" placeholder="수익률" value="${pureRate}" />
-    <button class="btn-row-del" onclick="this.parentElement.remove()">×</button>
-  `;
-  container.appendChild(div);
-}
+      <button class="btn-primary" id="submitBtn" onclick="savePerson()">구글 시트에 저장 및 반영</button>
+      <p class="small-help">※ 저장 버튼을 누르면 구글 시트 DB에 실시간 업데이트 처리됩니다.</p>
+    </section>
 
-function addWaitFormRow(val = '') {
-  const container = document.getElementById('formWaitContainer');
-  const div = document.createElement('div');
-  div.className = 'dynamic-wait-row';
-  div.innerHTML = `
-    <input class="modal-input w-name" placeholder="대기 종목명" value="${val}" />
-    <button class="btn-row-del" onclick="this.parentElement.remove()">×</button>
-  `;
-  container.appendChild(div);
-}
+    <section class="card">
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('output', this)">카톡 복사용</button>
+        <button class="tab" onclick="showTab('dashboard', this)">전체 현황</button>
+        <button class="tab" onclick="showTab('ranking', this)">종목 통계</button>
+        <button class="btn-clear" style="margin-left: auto; padding: 6px 12px;" onclick="fetchDataFromSheets()">🔄 동기화</button>
+      </div>
 
-function checkExistingUser() {
-  if(document.getElementById('editPersonId').value) return; // 이미 수정 클릭해서 들어온 경우는 패스
-  const name = document.getElementById('formName').value.trim();
-  if(!name) return;
-  const found = dbData.find(p => p.name === name);
-  if(found) fillInputForm(found, true);
-}
+      <div id="outputTab">
+        <div class="section-title">
+          <h2>자동 생성 양식</h2>
+          <button class="btn-copy" onclick="copyOutput()">전체 복사</button>
+        </div>
+        <div class="output-area">
+          <pre id="outputText">데이터를 가져오는 중입니다...</pre>
+        </div>
+      </div>
 
-function fillInputForm(person, isAutoDetect = false) {
-  document.getElementById('editPersonId').value = person.id || '';
-  document.getElementById('formName').value = person.name || '';
-  document.getElementById('formTotal').value = person.totalMoney || person.total || '';
-  document.getElementById('formCash').value = person.cash || '';
-  document.getElementById('formMemo').value = person.memo || '변동 0';
-  
-  document.getElementById('formStockContainer').innerHTML = '';
-  document.getElementById('formWaitContainer').innerHTML = '';
-  
-  if(isAutoDetect) {
-    document.getElementById('inputModalTitle').textContent = `💥 데이터 수정 모드 (${person.name})`;
-  }
+      <div id="dashboardTab" class="hidden">
+        <div class="section-title"><h2>전체 요약</h2></div>
+        <div class="summary-grid">
+          <div class="summary-box"><div class="label">참여 인원</div><div class="value" id="countPeople">0명</div></div>
+          <div class="summary-box"><div class="label">총 투자금</div><div class="value" id="sumTotal">0원</div></div>
+          <div class="summary-box"><div class="label">총 예수금</div><div class="value" id="sumCash">0원</div></div>
+          <div class="summary-box"><div class="label">투입 비율</div><div class="value" id="investRate">0%</div></div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>이름</th>
+              <th>총액</th>
+              <th>예수금</th>
+              <th>매수 종목</th>
+              <th>대기</th>
+              <th>관리</th>
+            </tr>
+          </thead>
+          <tbody id="peopleTable"></tbody>
+        </table>
+      </div>
 
-  if(person.holdings && person.holdings.length) person.holdings.forEach(h => addStockFormRow(h));
-  else if(person.stocks && person.stocks.length) person.stocks.forEach(s => addStockFormRow(s));
-  else addStockFormRow();
+      <div id="rankingTab" class="hidden">
+        <div class="section-title"><h2>종목별 참여 현황</h2></div>
+        <table>
+          <thead>
+            <tr>
+              <th>종목명</th>
+              <th>매수 인원</th>
+              <th>평균 수익률</th>
+              <th>대기 인원</th>
+              <th>참여자</th>
+            </tr>
+          </thead>
+          <tbody id="stockStatsTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
 
-  const currentWaits = person.waits || person.watchlist || [];
-  if(currentWaits.length) currentWaits.forEach(w => addWaitFormRow(w));
-  else addWaitFormRow();
-}
+  <div id="configModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>구글 Apps Script 웹앱 연동 설정</h3>
+      <p style="font-size: 13px; color: var(--muted); line-height:1.5;">
+        기본 내장된 API 주소 외에 다른 구글 시트 배포 주소로 변경하고 싶을 때 입력하세요.
+      </p>
+      <label>웹 앱 API URL</label>
+      <input type="text" id="webAppUrlInput" placeholder="https://script.google.com/macros/s/.../exec" />
+      <div class="row" style="margin-top: 20px;">
+        <button class="btn-clear" onclick="closeConfig()">취소</button>
+        <button class="btn-primary" style="margin-top:0;" onclick="saveConfig()">주소 변경 저장</button>
+      </div>
+    </div>
+  </div>
 
-function submitData() {
-  if(!config.gasWebAppUrl) { alert('설정창(⚙)을 열고 구글 Apps Script 웹앱 URL을 가이드에 맞게 먼저 등록해주세요.'); return; }
-  const name = document.getElementById('formName').value.trim();
-  if(!name) { alert('투자자 이름을 작성해주세요.'); return; }
+  <script>
+    const STORAGE_KEY = 'jaejung_sheet_api_config';
+    // 제공받은 URL을 기본 내장값으로 셋팅
+    const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbx7himiy-QLUAIH4krgMaU0tcSLNJ9gx29osYQ--ciyHoMNsao9-uWLITADFaZL4Cg7/exec';
+    
+    let webAppUrl = localStorage.getItem(STORAGE_KEY) || DEFAULT_URL;
+    let people = [];
 
-  const stocks = [];
-  document.querySelectorAll('#formStockContainer .dynamic-row').forEach(row => {
-    const sName = row.querySelector('.s-name').value.trim();
-    if(sName) {
-      stocks.push({
-        name: sName,
-        price: Number(row.querySelector('.s-price').value) || 0,
-        rate: row.querySelector('.s-sign').value + row.querySelector('.s-rate').value.replace(/[+-%\s]/g, '') + '%',
-        round: '1차' // 기본값 바인딩
+    function onlyNumber(value) {
+      return Number(String(value).replace(/[^0-9.-]/g, '')) || 0;
+    }
+
+    function money(value) {
+      return onlyNumber(value).toLocaleString('ko-KR') + '원';
+    }
+
+    function formatMoneyInput(input) {
+      const raw = String(input.value).replace(/[^0-9]/g, '');
+      input.value = raw ? Number(raw).toLocaleString('ko-KR') : '';
+    }
+
+    function addStockRow(data = {}) {
+      const wrap = document.getElementById('stockList');
+      const row = document.createElement('div');
+      row.className = 'stock-row';
+      row.innerHTML = `
+        <input class="stock-name" placeholder="종목명" value="${data.name || ''}">
+        <input class="stock-price" inputmode="numeric" placeholder="매수가" value="${data.price || ''}" oninput="formatMoneyInput(this)">
+        <div class="rate-input-wrap">
+          <select class="stock-rate-sign">
+            <option value="+" ${String(data.rate || '').trim().startsWith('-') ? '' : 'selected'}>+</option>
+            <option value="-" ${String(data.rate || '').trim().startsWith('-') ? 'selected' : ''}>-</option>
+          </select>
+          <input class="stock-rate" inputmode="decimal" placeholder="수익률" value="${String(data.rate || '').replace(/[+%\-]/g, '')}">
+        </div>
+        <select class="stock-round">
+          <option value="1차" ${data.round === '1차' ? 'selected' : ''}>1차</option>
+          <option value="2차" ${data.round === '2차' ? 'selected' : ''}>2차</option>
+          <option value="3차" ${data.round === '3차' ? 'selected' : ''}>3차</option>
+          <option value="4차" ${data.round === '4차' ? 'selected' : ''}>4차</option>
+        </select>
+        <button class="btn-danger" onclick="this.parentElement.remove()">삭제</button>
+      `;
+      wrap.appendChild(row);
+    }
+
+    function addWaitRow(value = '') {
+      const wrap = document.getElementById('waitList');
+      const row = document.createElement('div');
+      row.className = 'wait-row';
+      row.innerHTML = `
+        <input class="wait-name" placeholder="대기 종목명" value="${value}">
+        <button class="btn-danger" onclick="this.parentElement.remove()">삭제</button>
+      `;
+      wrap.appendChild(row);
+    }
+
+    function makeRateValue(sign, value) {
+      const clean = String(value).replace(/[^0-9.]/g, '');
+      if (!clean) return '';
+      return `${sign}${clean}%`;
+    }
+
+    // ─── 구글 시트 API 통신 (조회 및 저장) ──────────────────────────
+    async function fetchDataFromSheets() {
+      if (!webAppUrl) {
+        document.getElementById('outputText').textContent = "⚠️ 상단의 설정 버튼을 눌러 구글 웹앱 URL을 연동해 주세요.";
+        return;
+      }
+      try {
+        const response = await fetch(webAppUrl);
+        const rawData = await response.json();
+        
+        if (rawData && rawData.length > 0) {
+          parseSheetRows(rawData);
+          renderAll();
+        } else {
+          document.getElementById('outputText').textContent = "시트에 데이터가 없거나 구성 파일 포맷이 다릅니다.";
+        }
+      } catch (e) {
+        console.error(e);
+        document.getElementById('outputText').textContent = "❌ 구글 시트에서 데이터를 불러오지 못했습니다. 앱 스크립트 배포 상태와 권한을 확인해 주세요.";
+      }
+    }
+
+    function parseSheetRows(rows) {
+      const dataRows = rows.slice(1); // 헤더 행 제외
+      people = dataRows.map((cols, idx) => {
+        if (!cols[1]) return null; 
+
+        const member = {
+          id: 'id_' + idx,
+          orderNo: parseInt(cols[0]) || (idx + 1),
+          name: String(cols[1]).trim(),
+          totalMoney: parseInt(String(cols[2] || '0').replace(/,/g, '')) || 0,
+          cash: parseInt(String(cols[3] || '0').replace(/,/g, '')) || 0,
+          memo: '변동 0',
+          stocks: [],
+          waits: []
+        };
+
+        let i = 4;
+        while (i < cols.length) {
+          if (cols[i] === undefined || cols[i] === null || cols[i] === '') { i++; continue; }
+          if (String(cols[i]).toLowerCase() === 'watchlist') {
+            member.waits = cols.slice(i + 1).filter(Boolean).map(x => String(x).trim());
+            break;
+          }
+          
+          const name = String(cols[i]).trim();
+          const price = parseInt(String(cols[i+1] || '0').replace(/,/g, '')) || 0;
+          const rate = String(cols[i+2] || '').trim();
+          const round = String(cols[i+3] || '1차').trim();
+          
+          if (name) {
+            member.stocks.push({ name, price, rate, round });
+          }
+          i += 4;
+        }
+        return member;
+      }).filter(Boolean);
+    }
+
+    async function savePerson() {
+      if (!webAppUrl) {
+        alert('시트 API 설정을 완료해 주세요.');
+        openConfig();
+        return;
+      }
+
+      const person = {
+        orderNo: onlyNumber(document.getElementById('orderNo').value),
+        name: document.getElementById('name').value.trim(),
+        totalMoney: onlyNumber(document.getElementById('totalMoney').value),
+        cash: onlyNumber(document.getElementById('cash').value),
+        memo: document.getElementById('memo').value.trim() || '변동 0',
+        stocks: [...document.querySelectorAll('.stock-row')].map(row => ({
+          name: row.querySelector('.stock-name').value.trim(),
+          price: onlyNumber(row.querySelector('.stock-price').value),
+          rate: makeRateValue(row.querySelector('.stock-rate-sign').value, row.querySelector('.stock-rate').value.trim()),
+          round: row.querySelector('.stock-round').value
+        })).filter(x => x.name),
+        waits: [...document.querySelectorAll('.wait-name')].map(x => x.value.trim()).filter(Boolean)
+      };
+
+      if (!person.name) {
+        alert('이름을 입력해주세요.');
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = '구글 시트 전송 중...';
+
+      try {
+        await fetch(webAppUrl, {
+          method: 'POST',
+          mode: 'no-cors', 
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(person)
+        });
+
+        alert('구글 시트 데이터 전송 완료! 잠시 후 자동 동기화됩니다.');
+        resetForm(false);
+        setTimeout(fetchDataFromSheets, 1500);
+      } catch (err) {
+        console.error(err);
+        alert('데이터 전송 중 네트워크 오류가 발생했습니다.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '구글 시트에 저장 및 반영';
+      }
+    }
+
+    // ─── UI RENDERING LOGIC ───────────────────────────────────────
+    function resetForm(addDefault = true) {
+      ['orderNo', 'name', 'totalMoney', 'cash', 'memo'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('stockList').innerHTML = '';
+      document.getElementById('waitList').innerHTML = '';
+      if (addDefault) {
+        addStockRow();
+        addWaitRow();
+      }
+    }
+
+    function editPerson(name) {
+      const p = people.find(x => x.name === name);
+      if (!p) return;
+      document.getElementById('orderNo').value = p.orderNo || '';
+      document.getElementById('name').value = p.name || '';
+      document.getElementById('totalMoney').value = p.totalMoney ? p.totalMoney.toLocaleString('ko-KR') : '';
+      document.getElementById('cash').value = p.cash ? p.cash.toLocaleString('ko-KR') : '';
+      document.getElementById('memo').value = p.memo || '변동 0';
+      document.getElementById('stockList').innerHTML = '';
+      document.getElementById('waitList').innerHTML = '';
+      p.stocks.forEach(s => addStockRow({ ...s, price: s.price ? s.price.toLocaleString('ko-KR') : '' }));
+      p.waits.forEach(w => addWaitRow(w));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function formatPerson(p) {
+      const lines = [];
+      lines.push(`${p.orderNo ? p.orderNo + '.' : ''}${p.name}`);
+      lines.push('');
+      lines.push('ㅇ 투자금');
+      lines.push(`ㅣ 총액 ${money(p.totalMoney)}`);
+      lines.push(`ㅣ 예수 ${money(p.cash)}`);
+      if (p.memo) lines.push(`ㅣ ${p.memo}`);
+      lines.push('ㅇ 매수');
+      if (p.stocks.length) {
+        p.stocks.forEach(s => {
+          const rate = s.rate || '';
+          lines.push(`ㅣ ${s.name} ${s.price.toLocaleString('ko-KR')} ${rate} ${s.round}`.trim());
+        });
+      } else {
+        lines.push('ㅣ 없음');
+      }
+      lines.push('ㅇ 대기');
+      if (p.waits.length) p.waits.forEach(w => lines.push(`ㅣ ${w}`));
+      else lines.push('ㅣ 없음');
+      return lines.join('\n');
+    }
+
+    function renderOutput() {
+      const sorted = [...people].sort((a, b) => (a.orderNo || 0) - (b.orderNo || 0));
+      document.getElementById('outputText').textContent = sorted.length ? sorted.map(formatPerson).join('\n\n') : '시트에 저장된 내용이 없습니다.';
+    }
+
+    function renderDashboard() {
+      const total = people.reduce((sum, p) => sum + p.totalMoney, 0);
+      const cash = people.reduce((sum, p) => sum + p.cash, 0);
+      document.getElementById('countPeople').textContent = `${people.length}명`;
+      document.getElementById('sumTotal').textContent = money(total);
+      document.getElementById('sumCash').textContent = money(cash);
+      document.getElementById('investRate').textContent = total ? `${Math.round(((total - cash) / total) * 100)}%` : '0%';
+
+      const tbody = document.getElementById('peopleTable');
+      tbody.innerHTML = '';
+      [...people].sort((a, b) => (a.orderNo || 999) - (b.orderNo || 999)).forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${p.orderNo ? p.orderNo + '. ' : ''}${p.name}</strong></td>
+          <td>${money(p.totalMoney)}</td>
+          <td>${money(p.cash)}</td>
+          <td>${p.stocks.map(s => `<span class="badge ${String(s.rate).includes('-') ? 'minus' : 'plus'}">${s.name} ${s.rate}</span>`).join('')}</td>
+          <td>${p.waits.map(w => `<span class="badge waiting">${w}</span>`).join('')}</td>
+          <td>
+            <button class="btn-sub" style="padding:4px 8px; font-size:12px; margin:0;" onclick="editPerson('${p.name}')">수정하기</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
       });
     }
-  });
 
-  const waits = [];
-  document.querySelectorAll('#formWaitContainer .w-name').forEach(input => {
-    if(input.value.trim()) waits.push(input.value.trim());
-  });
+    function renderStats() {
+      const map = new Map();
+      people.forEach(p => {
+        p.stocks.forEach(s => {
+          if (!map.has(s.name)) map.set(s.name, { buy: [], wait: [] });
+          map.get(s.name).buy.push({ person: p.name, rate: parseFloat(String(s.rate).replace('%', '')) || 0 });
+        });
+        p.waits.forEach(w => {
+          if (!map.has(w)) map.set(w, { buy: [], wait: [] });
+          map.get(w).wait.push(p.name);
+        });
+      });
 
-  const payload = {
-    id: document.getElementById('editPersonId').value || "id_" + Date.now(),
-    name: name,
-    totalMoney: Number(document.getElementById('formTotal').value) || 0,
-    cash: Number(document.getElementById('formCash').value) || 0,
-    memo: document.getElementById('formMemo').value.trim() || '변동 0',
-    stocks: stocks,
-    waits: waits
-  };
-
-  const btn = document.getElementById('btnSubmitData');
-  btn.disabled = true; btn.innerText = '구글 시트로 실시간 패킹 전송 중...';
-
-  fetch(config.gasWebAppUrl, {
-    method: 'POST',
-    body: JSON.stringify({ action: 'save', person: payload })
-  })
-  .then(res => res.json())
-  .then(res => {
-    btn.disabled = false; btn.innerText = '구글 시트에 클라우드 저장';
-    if(res.success) {
-      closeInputModal();
-      loadData();
-    } else {
-      alert('저장 실패: ' + res.error);
+      const tbody = document.getElementById('stockStatsTable');
+      tbody.innerHTML = '';
+      [...map.entries()].sort((a, b) => b[1].buy.length - a[1].buy.length).forEach(([name, data]) => {
+        const avg = data.buy.length ? (data.buy.reduce((s, x) => s + x.rate, 0) / data.buy.length).toFixed(2) + '%' : '-';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${name}</strong></td>
+          <td>${data.buy.length}명</td>
+          <td>${avg}</td>
+          <td>${data.wait.length}명</td>
+          <td>${[...data.buy.map(x => x.person), ...data.wait.map(x => x + ' 대기')].join(', ')}</td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
-  })
-  .catch(() => {
-    btn.disabled = false; btn.innerText = '구글 시트에 클라우드 저장';
-    alert('구글 서버와 네트워크 바인딩 통신 중 에러가 발생했습니다.');
-  });
-}
 
-// ─── MODAL CONTROLS ─────────────────────────────────────────────
-function openSettings() {
-  document.getElementById('settingsModal').classList.add('open');
-  document.getElementById('gasWebAppUrl').value = config.gasWebAppUrl || '';
-  document.getElementById('githubUrl').value = config.githubUrl || '';
-}
-function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
-function saveSettings() {
-  config = {
-    gasWebAppUrl: document.getElementById('gasWebAppUrl').value.trim(),
-    githubUrl: document.getElementById('githubUrl').value.trim()
-  };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-  if (config.githubUrl) document.getElementById('githubLink').href = config.githubUrl;
-  closeSettings();
-  loadData();
-}
+    function renderAll() {
+      renderOutput();
+      renderDashboard();
+      renderStats();
+    }
 
-function openInputModal() {
-  document.getElementById('inputModal').classList.add('open');
-  document.getElementById('inputModalTitle').textContent = '투자 데이터 등록 / 수정';
-  document.getElementById('editPersonId').value = '';
-  document.getElementById('formName').value = '';
-  document.getElementById('formTotal').value = '';
-  document.getElementById('formCash').value = '';
-  document.getElementById('formMemo').value = '';
-  document.getElementById('formStockContainer').innerHTML = '';
-  document.getElementById('formWaitContainer').innerHTML = '';
-  addStockFormRow();
-  addWaitFormRow();
-}
-function openEditMode(person) {
-  document.getElementById('inputModal').classList.add('open');
-  document.getElementById('inputModalTitle').textContent = `💥 데이터 수정 모드 (${person.name})`;
-  fillInputForm(person, false);
-}
-function closeInputModal() { document.getElementById('inputModal').classList.remove('open'); }
+    function copyOutput() {
+      navigator.clipboard.writeText(document.getElementById('outputText').textContent);
+      alert('복사되었습니다. 카톡방에 붙여넣기 하면 됩니다.');
+    }
 
-// ─── INITIALIZATION ──────────────────────────────────────────────
-if (config.githubUrl) document.getElementById('githubLink').href = config.githubUrl;
-if (config.gasWebAppUrl) document.getElementById('setupBanner').style.display = 'none';
-loadData();
-</script>
+    function showTab(tab, button) {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      button.classList.add('active');
+      document.getElementById('outputTab').classList.toggle('hidden', tab !== 'output');
+      document.getElementById('dashboardTab').classList.toggle('hidden', tab !== 'dashboard');
+      document.getElementById('rankingTab').classList.toggle('hidden', tab !== 'ranking');
+    }
+
+    // ─── MODAL CONTROLS ──────────────────────────────────────────
+    function openConfig() {
+      document.getElementById('configModal').classList.remove('hidden');
+      document.getElementById('webAppUrlInput').value = webAppUrl;
+    }
+    function closeConfig() {
+      document.getElementById('configModal').classList.add('hidden');
+    }
+    function saveConfig() {
+      const inputVal = document.getElementById('webAppUrlInput').value.trim();
+      if(!inputVal) return;
+      webAppUrl = inputVal;
+      localStorage.setItem(STORAGE_KEY, webAppUrl);
+      closeConfig();
+      fetchDataFromSheets();
+    }
+
+    // ─── INITIAL EXECUTION ────────────────────────────────────────
+    resetForm();
+    fetchDataFromSheets();
+  </script>
 </body>
 </html>
