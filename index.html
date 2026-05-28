@@ -1,329 +1,641 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <base target="_top">
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>재정학교 대시보드</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>재정학교 — 투자 현황</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; font-family: sans-serif; }
-    body { margin: 0; padding: 0; background: #f1f5f9; color: #1e293b; }
-    header { background: white; padding: 20px; border-bottom: 1px solid #e2e8f0; text-align: center; }
-    header h1 { margin: 0; font-size: 22px; color: #0f172a; }
-    .container { max-width: 1280px; margin: 24px auto; padding: 0 20px; display: grid; grid-template-columns: 460px 1fr; gap: 24px; }
-    .card { background: white; border-radius: 20px; padding: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
-    label { display: block; margin: 12px 0 4px; font-size: 13px; font-weight: bold; color: #475569; }
-    input, select { width: 100%; border: 1px solid #cbd5e1; border-radius: 12px; padding: 10px 12px; font-size: 14px; outline: none; margin-bottom: 5px; }
-    .money-guide { font-size: 12px; color: #2563eb; font-weight: bold; margin-top: 4px; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .section-title { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 8px; }
-    .stock-row { display: grid; grid-template-columns: 1.2fr 1fr 55px 0.8fr 65px 36px; gap: 4px; align-items: center; background: #f8fafc; padding: 6px; border-radius: 12px; margin-bottom: 6px; }
-    .wait-row { display: grid; grid-template-columns: 1fr 36px; gap: 6px; align-items: center; background: #f8fafc; padding: 6px; border-radius: 12px; margin-bottom: 6px; }
-    button { border: 0; border-radius: 12px; font-weight: bold; cursor: pointer; padding: 10px; }
-    .btn-main { width: 100%; background: #2563eb; color: white; padding: 14px; font-size: 15px; margin-top: 20px; }
-    .btn-add { background: #e2e8f0; color: #475569; padding: 6px 12px; font-size: 12px; }
-    .btn-del { background: #fee2e2; color: #ef4444; }
-    .status-badge { display: inline-block; padding: 6px 12px; border-radius: 20px; background: #f1f5f9; font-size: 12px; font-weight: bold; }
-    .status-badge.online { background: #dcfce7; color: #166534; }
-    .table-container { background: white; border-radius: 16px; border: 1px solid #e2e8f0; overflow-x: auto; margin-top: 15px; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 700px; }
-    th { background: #f8fafc; padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0; }
-    td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
-    .badge { display: inline-block; padding: 4px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; margin: 2px; }
-    .badge.up { background: #fee2e2; color: #dc2626; }
-    .badge.down { background: #e0f2fe; color: #0284c7; }
-    .badge.gray { background: #f1f5f9; color: #475569; }
-    @media (max-width: 1024px) { .container { grid-template-columns: 1fr; } }
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface2: #1a1a26;
+      --border: rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --text: #f0eff5;
+      --muted: #7b7a8e;
+      --accent: #b8a9ff;
+      --accent2: #7c6ff7;
+      --green: #52d68a;
+      --red: #ff6b6b;
+      --amber: #ffc547;
+      --teal: #42d4c8;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124,111,247,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,111,247,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      top: -200px;
+      right: -100px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(124,111,247,0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header {
+      position: relative;
+      z-index: 10;
+      padding: 48px 60px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .logo-area { display: flex; flex-direction: column; gap: 6px; }
+    .logo-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      opacity: 0.8;
+    }
+    .logo-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 40px;
+      line-height: 1;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .logo-title em { font-style: italic; color: var(--accent); }
+    .header-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+    .last-updated { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); }
+    .refresh-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: transparent;
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      color: var(--muted);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .refresh-btn svg { width: 14px; height: 14px; }
+
+    .summary-strip { position: relative; z-index: 10; display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--border); }
+    .summary-item { padding: 24px 32px; border-right: 1px solid var(--border); }
+    .summary-item:last-child { border-right: none; }
+    .summary-label { font-size: 11px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 8px; }
+    .summary-value { font-size: 26px; font-weight: 500; color: var(--text); line-height: 1; }
+    .summary-value.accent { color: var(--accent); }
+    .summary-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    main { position: relative; z-index: 10; padding: 40px 60px 80px; }
+    .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+    .section-title { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); }
+    .section-count { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); background: var(--surface2); border: 1px solid var(--border); padding: 2px 10px; border-radius: 20px; }
+    .section-line { flex: 1; height: 1px; background: var(--border); }
+
+    .members-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; margin-bottom: 60px; }
+    .member-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.2s, transform 0.2s; cursor: pointer; }
+    .member-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .member-card-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
+    .member-rank { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.1em; }
+    .member-name { font-size: 18px; font-weight: 500; color: var(--text); margin-top: 4px; }
+    .member-total { text-align: right; }
+    .member-total-label { font-size: 10px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; }
+    .member-total-value { font-size: 20px; font-weight: 500; color: var(--accent); margin-top: 2px; font-family: 'IBM Plex Mono', monospace; }
+    .member-total-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .member-card-body { padding: 16px 24px 20px; }
+    .holdings-label { font-size: 10px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
+    .holdings-list { display: flex; flex-direction: column; gap: 6px; }
+    .holding-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: var(--surface2); border-radius: 6px; transition: background 0.15s; }
+    .holding-row:hover { background: rgba(124,111,247,0.08); }
+    .holding-name { font-size: 13px; font-weight: 400; color: var(--text); flex: 1; }
+    .holding-price { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); margin: 0 12px; }
+    .holding-right { display: flex; align-items: center; gap: 8px; }
+    .holding-pnl { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; }
+    .holding-pnl.pos { color: var(--green); }
+    .holding-pnl.neg { color: var(--red); }
+    .holding-stage { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; }
+    .stage-1 { background: rgba(66,212,200,0.12); color: var(--teal); }
+    .stage-2 { background: rgba(184,169,255,0.12); color: var(--accent); }
+    .stage-3 { background: rgba(255,197,71,0.12); color: var(--amber); }
+    .watchlist-section { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .watchlist-label { font-size: 10px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 8px; }
+    .watchlist-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .watchlist-tag { font-size: 11px; padding: 3px 8px; background: transparent; border: 1px solid var(--border2); border-radius: 4px; color: var(--muted); }
+
+    .popularity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+    .stock-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; display: flex; align-items: center; gap: 14px; transition: border-color 0.2s; }
+    .stock-item:hover { border-color: var(--accent2); }
+    .stock-rank-num { font-family: 'Instrument Serif', serif; font-size: 28px; color: var(--border2); min-width: 32px; line-height: 1; }
+    .stock-info { flex: 1; min-width: 0; }
+    .stock-name { font-size: 14px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .stock-holders { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .stock-bar { width: 100%; height: 3px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+    .stock-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 2px; transition: width 0.6s ease; }
+
+    .setup-banner { background: linear-gradient(135deg, rgba(124,111,247,0.1), rgba(66,212,200,0.05)); border: 1px solid rgba(124,111,247,0.25); border-radius: 12px; padding: 28px 32px; margin-bottom: 40px; display: flex; align-items: center; gap: 24px; }
+    .setup-icon { width: 48px; height: 48px; background: rgba(124,111,247,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .setup-content { flex: 1; }
+    .setup-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+    .setup-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .setup-btn { padding: 10px 20px; background: var(--accent2); border: none; border-radius: 7px; color: white; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: opacity 0.2s; text-decoration: none; }
+    .setup-btn:hover { opacity: 0.85; }
+
+    /* MODAL EXTRAS FOR INPUT & EDITING */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; display: none; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; padding: 32px; width: 95%; max-width: 560px; position: relative; max-height: 85vh; overflow-y: auto; }
+    .modal-close { position: absolute; top: 16px; right: 16px; background: transparent; border: 1px solid var(--border); border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); font-size: 16px; }
+    .modal-title { font-family: 'Instrument Serif', serif; font-size: 24px; margin-bottom: 4px; color: var(--text); }
+    .modal-subtitle { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+    .modal-field { margin-bottom: 14px; }
+    .modal-label { font-size: 11px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; }
+    .modal-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 10px 14px; color: var(--text); font-size: 14px; outline: none; }
+    .modal-input:focus { border-color: var(--accent); }
+    
+    .dynamic-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr 0.8fr 36px; gap: 6px; margin-bottom: 6px; align-items: center; }
+    .dynamic-wait-row { display: grid; grid-template-columns: 1fr 36px; gap: 6px; margin-bottom: 6px; align-items: center; }
+    .btn-row-add { background: var(--surface2); border: 1px dashed var(--border2); color: var(--accent); padding: 8px; width: 100%; border-radius: 6px; cursor: pointer; font-size: 12px; margin-bottom: 14px; text-align: center; }
+    .btn-row-del { background: rgba(255,107,107,0.15); color: var(--red); border: none; height: 34px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; }
+    
+    .modal-save { width: 100%; padding: 14px; background: var(--accent2); border: none; border-radius: 8px; color: white; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 10px; }
+    .modal-save:disabled { background: var(--border2); color: var(--muted); cursor: not-allowed; }
+    .modal-note { margin-top: 16px; padding: 12px; background: rgba(124,111,247,0.05); border-left: 2px solid var(--accent2); border-radius: 0 6px 6px 0; font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    .loading-state { text-align: center; padding: 60px 0; color: var(--muted); width: 100%; grid-column: 1 / -1; }
+    .spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .fade-in { opacity: 0; animation: fadeIn 0.4s ease forwards; }
+    @keyframes fadeIn { to { opacity: 1; } }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>📊 재정학교 투자현황 시스템</h1>
-    <p>안전하게 동기화되는 실시간 금융 대시보드</p>
-  </header>
+<header>
+  <div class="logo-area">
+    <div class="logo-label">재정학교 // Investment Tracker</div>
+    <h1 class="logo-title">포트폴리오 <em>현황</em></h1>
+  </div>
+  <div class="header-meta">
+    <div class="last-updated" id="lastUpdated">마지막 업데이트: —</div>
+    <div style="display: flex; gap: 8px;">
+      <button class="refresh-btn" onclick="openInputModal()" style="border-color: var(--accent); color: var(--accent);">+ 데이터 등록/수정</button>
+      <button class="refresh-btn" onclick="loadData()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 4v6h6M23 20v-6h-6"/>
+          <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+        </svg>
+        새로고침
+      </button>
+    </div>
+  </div>
+</header>
 
-  <main class="container">
-    <section class="card" id="formSection">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2>투자 데이터 입력</h2>
-        <button type="button" class="btn-add" onclick="resetForm()">입력 리셋</button>
+<div class="summary-strip">
+  <div class="summary-item">
+    <div class="summary-label">TOTAL MEMBERS</div>
+    <div class="summary-value accent" id="sumMembers">—</div>
+    <div class="summary-sub">참여 중인 투자자</div>
+  </div>
+  <div class="summary-item">
+    <div class="summary-label">TOTAL AUM</div>
+    <div class="summary-value" id="sumAum">—</div>
+    <div class="summary-sub">총 운용 자산</div>
+  </div>
+  <div class="summary-item">
+    <div class="summary-label">TOTAL HOLDINGS</div>
+    <div class="summary-value" id="sumHoldings">—</div>
+    <div class="summary-sub">총 보유 종목 수</div>
+  </div>
+  <div class="summary-item">
+    <div class="summary-label">TOP STOCK</div>
+    <div class="summary-value" id="sumTopStock">—</div>
+    <div class="summary-sub">가장 많이 보유한 종목</div>
+  </div>
+</div>
+
+<main>
+  <div class="setup-banner" id="setupBanner">
+    <div class="setup-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b8a9ff" stroke-width="1.5">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="8" y1="13" x2="16" y2="13"/>
+        <line x1="8" y1="17" x2="16" y2="17"/>
+      </svg>
+    </div>
+    <div class="setup-content">
+      <div class="setup-title">Google Sheets 웹앱 연동하기</div>
+      <div class="setup-desc">
+        구글 시트 배포 후 발급받은 배포용 웹앱 URL(GAS)을 우측 설정 메뉴에 입력해주시면 대시보드와 실시간 양방향 연동이 활성화됩니다.
       </div>
+    </div>
+    <button class="setup-btn" onclick="openSettings()">⚙ 연동 설정</button>
+  </div>
 
-      <label>투자자 이름</label>
-      <input id="name" placeholder="이름을 입력하세요" onblur="checkDuplicateName()">
+  <div class="section-header">
+    <h2 class="section-title">멤버 현황</h2>
+    <span class="section-count" id="memberCount">0명</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="members-grid" id="membersGrid"></div>
 
-      <div class="grid-2">
-        <div>
-          <label>총 투자금액</label>
-          <input id="money" placeholder="예: 20000000" oninput="formatAndGuide(this, 'moneyGuide')">
-          <div id="moneyGuide" class="money-guide"></div>
+  <div class="section-header" style="margin-top: 20px;">
+    <h2 class="section-title">인기 종목</h2>
+    <span class="section-count">보유 현황</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="popularity-grid" id="popularityGrid"></div>
+</main>
+
+<footer>
+  <div class="footer-text">재정학교 © 2026 — Portfolio Dashboard</div>
+  <div class="footer-links">
+    <a href="https://github.com" class="footer-link" id="githubLink">GitHub →</a>
+    <a href="#" class="footer-link" onclick="openSettings(); return false;">Settings</a>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="settingsModal" onclick="if(event.target===this)closeSettings()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSettings()">✕</button>
+    <div class="modal-title">시스템 연동 설정</div>
+    <div class="modal-subtitle">구글 스프레드시트 Apps Script 웹앱 연동 주소 입력</div>
+
+    <div class="modal-field">
+      <div class="modal-label">GOOGLE APPS SCRIPT WEB APP URL</div>
+      <input class="modal-input" id="gasWebAppUrl" placeholder="https://script.google.com/macros/s/.../exec" />
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">GITHUB REPO URL (선택)</div>
+      <input class="modal-input" id="githubUrl" placeholder="https://github.com/your-id/portfolio" />
+    </div>
+    <button class="modal-save" onclick="saveSettings()">설정 저장 및 데이터 동기화</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="inputModal" onclick="if(event.target===this)closeInputModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeInputModal()">✕</button>
+    <div class="modal-title" id="inputModalTitle">투자 데이터 등록 / 수정</div>
+    <div class="modal-subtitle">이름 입력 시 기존 참가자는 정보를 자동으로 조회하여 덮어씌웁니다.</div>
+
+    <input type="hidden" id="editPersonId" value="">
+    <div class="modal-field">
+      <div class="modal-label">투자자 이름</div>
+      <input class="modal-input" id="formName" placeholder="이름을 정확히 입력하세요" onblur="checkExistingUser()">
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <div class="modal-field">
+        <div class="modal-label">총 투자금액 (원)</div>
+        <input class="modal-input" id="formTotal" type="number" placeholder="예: 20000000">
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">보유 예수금 (원)</div>
+        <input class="modal-input" id="formCash" type="number" placeholder="예: 5000000">
+      </div>
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">기타 변동 및 메모</div>
+      <input class="modal-input" id="formMemo" placeholder="특이사항 없을 시 '변동 0' 기록">
+    </div>
+
+    <div class="modal-label" style="margin-top: 16px; display:flex; justify-content:space-between; align-items:center;">
+      <span>📈 보유 종목 현황</span>
+      <button type="button" class="refresh-btn" style="padding: 2px 8px; font-size:11px;" onclick="addStockFormRow()">+ 종목 추가</button>
+    </div>
+    <div id="formStockContainer" style="margin-bottom: 12px;"></div>
+
+    <div class="modal-label" style="margin-top: 16px; display:flex; justify-content:space-between; align-items:center;">
+      <span>⏳ 진입 대기 종목</span>
+      <button type="button" class="refresh-btn" style="padding: 2px 8px; font-size:11px;" onclick="addWaitFormRow()">+ 대기 추가</button>
+    </div>
+    <div id="formWaitContainer" style="margin-bottom: 16px;"></div>
+
+    <button class="modal-save" id="btnSubmitData" onclick="submitData()">구글 시트에 클라우드 저장</button>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG & STATE MANAGEMENT ──────────────────────────────────
+const STORAGE_KEY = 'jaejung_finance_config_v2';
+let config = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+let dbData = [];
+
+// ─── DEMO DATA (초기 연결 전용 더미셋) ─────────────────────────
+const DEMO_DATA = [
+  { id:"demo1", rank: 1, name: '오지석', total: 20000000, cash: 5000000, memo:"변동 0", holdings: [{ name: '한화오션', price: 128987, rate: "-5.0%", stage: "3차" }, { name: '현대차', price: 542375, rate: "+20.0%", stage: "2차" }], waits: ['LS머트리얼즈', '에스피지'] },
+  { id:"demo2", rank: 2, name: '곽병석', total: 30000000, cash: 9999882, memo:"변동 0", holdings: [{ name: '현대차', price: 529438, rate: "+23.44%", stage: "2차" }, { name: '한화오션', price: 128639, rate: "-4.76%", stage: "3차" }], waits: ['한미반도체'] }
+];
+
+// ─── UTILS ──────────────────────────────────────────────────────
+function formatWon(n) {
+  if (n >= 100000000) return (n / 100000000).toFixed(1) + '억';
+  if (n >= 10000) return Math.round(n / 10000) + '만';
+  return n.toLocaleString();
+}
+
+// ─── UI RENDER ENGINE ───────────────────────────────────────────
+function renderAll(data) {
+  const grid = document.getElementById('membersGrid');
+  if(!data || data.length === 0) {
+    grid.innerHTML = '<div class="loading-state"><p>데이터가 비어있습니다.</p></div>';
+    return;
+  }
+  
+  // 가나다 이름순 정렬 및 랭크 재매핑
+  const sorted = data.slice().sort((a,b) => a.name.localeCompare(b.name, 'ko'));
+  sorted.forEach((item, index) => { item.rank = index + 1; });
+
+  grid.innerHTML = sorted.map(m => {
+    const holdingsHTML = (m.holdings || []).map(h => {
+      const isMinus = String(h.rate).includes('-');
+      const cls = isMinus ? 'neg' : 'pos';
+      const stageNum = String(h.stage).replace(/[^0-9]/g, '') || '1';
+      return `
+        <div class="holding-row">
+          <span class="holding-name">${h.name}</span>
+          <span class="holding-price">${Number(h.price).toLocaleString()}</span>
+          <div class="holding-right">
+            <span class="holding-pnl ${cls}">${h.rate}</span>
+            <span class="holding-stage stage-${stageNum}">${h.stage || '1차'}</span>
+          </div>
+        </div>`;
+    }).join('') || '<div style="color:var(--muted); font-size:12px; text-align:center; padding:6px;">보유 종목 없음</div>';
+
+    const watchHTML = (m.waits || []).length > 0 ? `
+      <div class="watchlist-section">
+        <div class="watchlist-label">대기 WATCHLIST</div>
+        <div class="watchlist-tags">
+          ${m.waits.map(w => `<span class="watchlist-tag">${w}</span>`).join('')}
         </div>
-        <div>
-          <label>보유 예수금</label>
-          <input id="cash" placeholder="예: 5000000" oninput="formatAndGuide(this, 'cashGuide')">
-          <div id="cashGuide" class="money-guide"></div>
+      </div>` : '';
+
+    return `
+      <div class="member-card fade-in" onclick='openEditMode(${JSON.stringify(m)})'>
+        <div class="member-card-header">
+          <div>
+            <div class="member-rank"># ${m.rank.toString().padStart(2, '0')}</div>
+            <div class="member-name">${m.name}</div>
+          </div>
+          <div class="member-total">
+            <div class="member-total-label">TOTAL</div>
+            <div class="member-total-value">${formatWon(m.total || 0)}</div>
+            <div class="member-total-sub">예수금 ${formatWon(m.cash || 0)}</div>
+          </div>
         </div>
-      </div>
-
-      <label>기타 변동 및 추가 메모</label>
-      <input id="memo" placeholder="특이사항이 없으면 '변동 0'으로 기록됩니다">
-
-      <div class="section-title">
-        <h3>📈 매수 종목 보유 현황</h3>
-        <button type="button" class="btn-add" onclick="addStockField()">+ 종목 추가</button>
-      </div>
-      <div id="stockList"></div>
-
-      <div class="section-title">
-        <h3>⏳ 진입 대기 종목</h3>
-        <button type="button" class="btn-add" onclick="addWaitField()">+ 대기 추가</button>
-      </div>
-      <div id="waitList"></div>
-
-      <button type="button" id="saveBtn" class="btn-main" onclick="submitData()">구글 시트에 안전하게 저장하기</button>
-    </section>
-
-    <section class="card">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h2>전체 참가자 자산 현황</h2>
-        <div>
-          <span id="syncStatus" class="status-badge">연결 시험 중</span>
-          <button type="button" class="btn-add" style="margin-left:6px;" onclick="fetchDatabase()">🔄 새로고침</button>
+        <div class="member-card-body">
+          <div class="holdings-label">HOLDINGS · ${(m.holdings || []).length}종목</div>
+          <div class="holdings-list">${holdingsHTML}</div>
+          ${watchHTML}
         </div>
+      </div>`;
+  }).join('');
+
+  // 인기종목 계산 및 요약 데이터 세팅
+  renderPopularityAndSummary(sorted);
+}
+
+function renderPopularityAndSummary(data) {
+  const stockCount = {};
+  let totalAum = 0;
+  let totalHoldingsCount = 0;
+
+  data.forEach(m => {
+    totalAum += (Number(m.total) || 0);
+    const hList = m.holdings || [];
+    totalHoldingsCount += hList.length;
+    hList.forEach(h => { stockCount[h.name] = (stockCount[h.name] || 0) + 1; });
+  });
+
+  const sortedStocks = Object.entries(stockCount).sort((a,b) => b[1]-a[1]);
+  const max = sortedStocks[0]?.[1] || 1;
+
+  document.getElementById('popularityGrid').innerHTML = sortedStocks.map(([name, count], i) => `
+    <div class="stock-item">
+      <div class="stock-rank-num">${i+1}</div>
+      <div class="stock-info">
+        <div class="stock-name">${name}</div>
+        <div class="stock-holders">${count}명 보유</div>
+        <div class="stock-bar"><div class="stock-bar-fill" style="width:${(count/max*100).toFixed(0)}%"></div></div>
       </div>
+    </div>`).join('') || '<div class="loading-state"><p>집계할 데이터가 없습니다.</p></div>';
 
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>이름</th>
-              <th>총 투자금</th>
-              <th>예수금</th>
-              <th>보유 종목 현황</th>
-              <th>대기 종목</th>
-              <th>관리</th>
-            </tr>
-          </thead>
-          <tbody id="dataTableBody">
-            <tr><td colspan="6" style="text-align:center; padding:40px; color:#64748b;">데이터를 불러오는 중...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
+  document.getElementById('sumMembers').textContent = data.length + '명';
+  document.getElementById('sumAum').textContent = formatWon(totalAum);
+  document.getElementById('sumHoldings').textContent = totalHoldingsCount + '개';
+  document.getElementById('sumTopStock').textContent = sortedStocks[0]?.[0] || '—';
+  document.getElementById('memberCount').textContent = data.length + '명';
+  document.getElementById('lastUpdated').textContent = '마지막 업데이트: ' + new Date().toLocaleString('ko-KR');
+}
 
-  <script>
-    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwZmr5C_v-no6eIVErRnR-235dZPU6HJvVeiPHh64o8LAbSpKSqZM_fkyuVbgcuuThk/exec';
-    let dbData = [];
-    let activeEditingId = '';
+// ─── DATA SYSTEM CODE (통신 엔진 기반) ──────────────────────────
+function loadData() {
+  const grid = document.getElementById('membersGrid');
+  grid.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>클라우드 서버에서 연결 정보 조회 중...</p></div>';
 
-    function cleanNumber(str) { 
-      return Number(String(str).replace(/[^0-9.-]/g, '')) || 0; 
-    }
-    
-    function toWon(num) { 
-      return num.toLocaleString('ko-KR') + '원'; 
-    }
+  if (config.gasWebAppUrl) {
+    document.getElementById('setupBanner').style.display = 'none';
+    fetch(config.gasWebAppUrl)
+      .then(res => {
+        if(!res.ok) throw new Error();
+        return res.json();
+      })
+      .then(data => {
+        dbData = data || [];
+        renderAll(dbData);
+      })
+      .catch(() => {
+        grid.innerHTML = `<div class="loading-state"><p style="color:var(--red)">⚠ 구글 웹앱 URL 연동 실패. 주소 확인 및 Apps Script의 CORS 설정을 체크하세요.</p></div>`;
+      });
+  } else {
+    document.getElementById('setupBanner').style.display = 'flex';
+    setTimeout(() => { dbData = DEMO_DATA; renderAll(DEMO_DATA); }, 400);
+  }
+}
 
-    function toKoreanCurrency(num) {
-      if (!num || isNaN(num)) return '';
-      if (num >= 100000000) {
-        var eok = Math.floor(num / 100000000);
-        var man = Math.floor((num % 100000000) / 10000);
-        return man > 0 ? eok + '억 ' + man.toLocaleString('ko-KR') + '만 원' : eok + '억 원';
-      }
-      if (num >= 10000) return Math.floor(num / 10000).toLocaleString('ko-KR') + '만 원';
-      return num.toLocaleString('ko-KR') + '원';
-    }
+// 입력 폼 제어 및 동적 필드 로직
+function addStockFormRow(data = {}) {
+  const container = document.getElementById('formStockContainer');
+  const div = document.createElement('div');
+  div.className = 'dynamic-row';
+  
+  const pureRate = data.rate ? data.rate.replace(/[+-%\s]/g, '') : '';
+  const isMinus = data.rate && data.rate.includes('-');
 
-    function formatAndGuide(input, guideId) {
-      var val = input.value.replace(/[^0-9]/g, '');
-      if(val) {
-        input.value = Number(val).toLocaleString('ko-KR');
-        document.getElementById(guideId).innerText = '실시간 표기: ' + toKoreanCurrency(Number(val));
-      } else {
-        input.value = '';
-        document.getElementById(guideId).innerText = '';
-      }
-    }
+  div.innerHTML = `
+    <input class="modal-input s-name" placeholder="종목명" value="${data.name || ''}" />
+    <input class="modal-input s-price" type="number" placeholder="매수가" value="${data.price || ''}" />
+    <select class="modal-input s-sign" style="background:var(--surface2);">
+      <option value="+" ${isMinus?'':'selected'}>+</option>
+      <option value="-" ${isMinus?'selected':''}>-</option>
+    </select>
+    <input class="modal-input s-rate" placeholder="수익률" value="${pureRate}" />
+    <button class="btn-row-del" onclick="this.parentElement.remove()">×</button>
+  `;
+  container.appendChild(div);
+}
 
-    function updateStatus(text, isOnline) {
-      var el = document.getElementById('syncStatus');
-      if (el) {
-        el.innerText = text;
-        if(isOnline) el.className = 'status-badge online'; else el.className = 'status-badge';
-      }
-    }
+function addWaitFormRow(val = '') {
+  const container = document.getElementById('formWaitContainer');
+  const div = document.createElement('div');
+  div.className = 'dynamic-wait-row';
+  div.innerHTML = `
+    <input class="modal-input w-name" placeholder="대기 종목명" value="${val}" />
+    <button class="btn-row-del" onclick="this.parentElement.remove()">×</button>
+  `;
+  container.appendChild(div);
+}
 
-    function addStockField(data) {
-      var d = data || {};
-      var wrapper = document.createElement('div');
-      wrapper.className = 'stock-row';
-      var pureRate = d.rate ? d.rate.replace(/[+-%\s]/g, '') : '';
-      var isMinus = d.rate && d.rate.indexOf('-') !== -1;
-      
-      wrapper.innerHTML = [
-        '<input class="s-name" placeholder="종목명" value="' + (d.name || '') + '">',
-        '<input class="s-price" placeholder="매수가" value="' + (d.price ? Number(d.price).toLocaleString('ko-KR') : '') + '" oninput="this.value=this.value.replace(/[^0-9]/g,\'\').replace(/\\B(?=(\\d{3})+(?!\\d))/g,\',\')">',
-        '<select class="s-sign"><option value="+"' + (isMinus?'':' selected') + '>+</option><option value="-"' + (isMinus?' selected':'') + '>-</option></select>',
-        '<input class="s-rate" placeholder="수익률" value="' + pureRate + '">',
-        '<select class="s-round">',
-          '<option value="1차"' + (d.round==='1차'?' selected':'') + '>1차</option>',
-          '<option value="2차"' + (d.round==='2차'?' selected':'') + '>2차</option>',
-          '<option value="3차"' + (d.round==='3차'?' selected':'') + '>3차</option>',
-          '<option value="4차"' + (d.round==='4차'?' selected':'') + '>4차</option>',
-        '</select>',
-        '<button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>'
-      ].join('');
-      document.getElementById('stockList').appendChild(wrapper);
-    }
+function checkExistingUser() {
+  if(document.getElementById('editPersonId').value) return; // 이미 수정 클릭해서 들어온 경우는 패스
+  const name = document.getElementById('formName').value.trim();
+  if(!name) return;
+  const found = dbData.find(p => p.name === name);
+  if(found) fillInputForm(found, true);
+}
 
-    function addWaitField(val) {
-      var v = val || '';
-      var wrapper = document.createElement('div');
-      wrapper.className = 'wait-row';
-      wrapper.innerHTML = [
-        '<input class="w-name" placeholder="대기 종목명" value="' + v + '">',
-        '<button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>'
-      ].join('');
-      document.getElementById('waitList').appendChild(wrapper);
-    }
+function fillInputForm(person, isAutoDetect = false) {
+  document.getElementById('editPersonId').value = person.id || '';
+  document.getElementById('formName').value = person.name || '';
+  document.getElementById('formTotal').value = person.totalMoney || person.total || '';
+  document.getElementById('formCash').value = person.cash || '';
+  document.getElementById('formMemo').value = person.memo || '변동 0';
+  
+  document.getElementById('formStockContainer').innerHTML = '';
+  document.getElementById('formWaitContainer').innerHTML = '';
+  
+  if(isAutoDetect) {
+    document.getElementById('inputModalTitle').textContent = `💥 데이터 수정 모드 (${person.name})`;
+  }
 
-    function resetForm() {
-      activeEditingId = '';
-      document.getElementById('name').value = '';
-      document.getElementById('money').value = '';
-      document.getElementById('cash').value = '';
-      document.getElementById('moneyGuide').innerText = '';
-      document.getElementById('cashGuide').innerText = '';
-      document.getElementById('memo').value = '';
-      document.getElementById('stockList').innerHTML = '';
-      document.getElementById('waitList').innerHTML = '';
-      addStockField(); addWaitField();
-    }
+  if(person.holdings && person.holdings.length) person.holdings.forEach(h => addStockFormRow(h));
+  else if(person.stocks && person.stocks.length) person.stocks.forEach(s => addStockFormRow(s));
+  else addStockFormRow();
 
-    function fetchDatabase() {
-      updateStatus('데이터 실시간 동기화 중...', false);
-      fetch(GAS_WEB_APP_URL)
-        .then(function(res) { return res.json(); })
-        .then(function(data) { dbData = data || []; renderUI(); updateStatus('🟢 클라우드 연결 정상', true); })
-        .catch(function() { updateStatus('🔴 동기화 실패', false); });
-    }
+  const currentWaits = person.waits || person.watchlist || [];
+  if(currentWaits.length) currentWaits.forEach(w => addWaitFormRow(w));
+  else addWaitFormRow();
+}
 
-    function checkDuplicateName() {
-      if (activeEditingId) return;
-      var targetName = document.getElementById('name').value.trim();
-      if (!targetName) return;
-      var matched = dbData.find(function(p) { return p.name === targetName; });
-      if (matched) activateEditMode(matched);
-    }
+function submitData() {
+  if(!config.gasWebAppUrl) { alert('설정창(⚙)을 열고 구글 Apps Script 웹앱 URL을 가이드에 맞게 먼저 등록해주세요.'); return; }
+  const name = document.getElementById('formName').value.trim();
+  if(!name) { alert('투자자 이름을 작성해주세요.'); return; }
 
-    function activateEditMode(person) {
-      activeEditingId = person.id || '';
-      document.getElementById('name').value = person.name || '';
-      document.getElementById('money').value = person.totalMoney ? Number(person.totalMoney).toLocaleString('ko-KR') : '';
-      document.getElementById('cash').value = person.cash ? Number(person.cash).toLocaleString('ko-KR') : '';
-      formatAndGuide(document.getElementById('money'), 'moneyGuide');
-      formatAndGuide(document.getElementById('cash'), 'cashGuide');
-      document.getElementById('memo').value = person.memo || '';
-      document.getElementById('stockList').innerHTML = '';
-      document.getElementById('waitList').innerHTML = '';
-
-      if (person.stocks && person.stocks.length) {
-        person.stocks.forEach(function(s) { addStockField(s); });
-      } else { addStockField(); }
-      
-      if (person.waits && person.waits.length) {
-        person.waits.forEach(function(w) { addWaitField(w); });
-      } else { addWaitField(); }
-    }
-
-    function submitData() {
-      var name = document.getElementById('name').value.trim();
-      if (!name) { alert('투자자 이름을 입력해 주세요.'); return; }
-
-      var rows = document.querySelectorAll('.stock-row');
-      var stocks = [];
-      for(var i=0; i<rows.length; i++) {
-        var row = rows[i];
-        var sName = row.querySelector('.s-name').value.trim();
-        if(sName) {
-          stocks.push({
-            name: sName,
-            price: cleanNumber(row.querySelector('.s-price').value),
-            rate: row.querySelector('.s-sign').value + row.querySelector('.s-rate').value.replace(/[+-%\s]/g, '') + '%',
-            round: row.querySelector('.s-round').value
-          });
-        }
-      }
-
-      var waitInputs = document.querySelectorAll('.w-name');
-      var waits = [];
-      for(var j=0; j<waitInputs.length; j++) {
-        var wVal = waitInputs[j].value.trim();
-        if(wVal) waits.push(wVal);
-      }
-
-      var payload = {
-        id: activeEditingId, name: name,
-        totalMoney: cleanNumber(document.getElementById('money').value),
-        cash: cleanNumber(document.getElementById('cash').value),
-        memo: document.getElementById('memo').value.trim() || '변동 0',
-        stocks: stocks, waits: waits
-      };
-
-      var btn = document.getElementById('saveBtn');
-      btn.disabled = true; btn.innerText = '클라우드 전송 중...';
-
-      fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'save', person: payload }) })
-        .then(function(res) { return res.json(); })
-        .then(function(res) {
-          btn.disabled = false; btn.innerText = '구글 시트에 안전하게 저장하기';
-          if(res.success) { resetForm(); fetchDatabase(); } else { alert('저장 실패: ' + res.error); }
-        })
-        .catch(function() { btn.disabled = false; btn.innerText = '구글 시트에 안전하게 저장하기'; alert('네트워크 오류'); });
-    }
-
-    function renderUI() {
-      var tbody = document.getElementById('dataTableBody');
-      if(!tbody) return;
-      tbody.innerHTML = '';
-      
-      var sorted = dbData.slice().sort(function(a, b) { return a.name.localeCompare(b.name, 'ko'); });
-      if (!sorted.length) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#64748b;">저장된 데이터가 없습니다.</td></tr>';
-        return;
-      }
-
-      sorted.forEach(function(p) {
-        var tr = document.createElement('tr');
-        var stocksHtml = '';
-        if(p.stocks && p.stocks.length) {
-          stocksHtml = p.stocks.map(function(s) {
-            var cls = String(s.rate).indexOf('-') !== -1 ? 'down' : 'up';
-            return '<span class="badge ' + cls + '">' + s.name + ' | ' + toWon(s.price) + ' (' + s.rate + ') [' + s.round + ']</span>';
-          }).join('');
-        } else { stocksHtml = '-'; }
-
-        var waitsHtml = '';
-        if(p.waits && p.waits.length) {
-          waitsHtml = p.waits.map(function(w) { return '<span class="badge gray">' + w + '</span>'; }).join('');
-        } else { waitsHtml = '-'; }
-
-        tr.innerHTML = [
-          '<td style="font-weight:bold; color:#0f172a;">' + p.name + '</td>',
-          '<td style="font-weight:bold;">' + toWon(p.totalMoney) + '</td>',
-          '<td style="color:#475569;">' + toWon(p.cash) + '</td>',
-          '<td>' + stocksHtml + '</td>',
-          '<td>' + waitsHtml + '</td>',
-          '<td><button class="btn-add" style="background:#eff6ff; color:#2563eb;" onclick=\'activateEditMode(' + JSON.stringify(p) + ')\'>수정</button></td>'
-        ].join('');
-        tbody.appendChild(tr);
+  const stocks = [];
+  document.querySelectorAll('#formStockContainer .dynamic-row').forEach(row => {
+    const sName = row.querySelector('.s-name').value.trim();
+    if(sName) {
+      stocks.push({
+        name: sName,
+        price: Number(row.querySelector('.s-price').value) || 0,
+        rate: row.querySelector('.s-sign').value + row.querySelector('.s-rate').value.replace(/[+-%\s]/g, '') + '%',
+        round: '1차' // 기본값 바인딩
       });
     }
+  });
 
-    window.onload = function() { resetForm(); fetchDatabase(); };
-  </script>
+  const waits = [];
+  document.querySelectorAll('#formWaitContainer .w-name').forEach(input => {
+    if(input.value.trim()) waits.push(input.value.trim());
+  });
+
+  const payload = {
+    id: document.getElementById('editPersonId').value || "id_" + Date.now(),
+    name: name,
+    totalMoney: Number(document.getElementById('formTotal').value) || 0,
+    cash: Number(document.getElementById('formCash').value) || 0,
+    memo: document.getElementById('formMemo').value.trim() || '변동 0',
+    stocks: stocks,
+    waits: waits
+  };
+
+  const btn = document.getElementById('btnSubmitData');
+  btn.disabled = true; btn.innerText = '구글 시트로 실시간 패킹 전송 중...';
+
+  fetch(config.gasWebAppUrl, {
+    method: 'POST',
+    body: JSON.stringify({ action: 'save', person: payload })
+  })
+  .then(res => res.json())
+  .then(res => {
+    btn.disabled = false; btn.innerText = '구글 시트에 클라우드 저장';
+    if(res.success) {
+      closeInputModal();
+      loadData();
+    } else {
+      alert('저장 실패: ' + res.error);
+    }
+  })
+  .catch(() => {
+    btn.disabled = false; btn.innerText = '구글 시트에 클라우드 저장';
+    alert('구글 서버와 네트워크 바인딩 통신 중 에러가 발생했습니다.');
+  });
+}
+
+// ─── MODAL CONTROLS ─────────────────────────────────────────────
+function openSettings() {
+  document.getElementById('settingsModal').classList.add('open');
+  document.getElementById('gasWebAppUrl').value = config.gasWebAppUrl || '';
+  document.getElementById('githubUrl').value = config.githubUrl || '';
+}
+function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
+function saveSettings() {
+  config = {
+    gasWebAppUrl: document.getElementById('gasWebAppUrl').value.trim(),
+    githubUrl: document.getElementById('githubUrl').value.trim()
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+  if (config.githubUrl) document.getElementById('githubLink').href = config.githubUrl;
+  closeSettings();
+  loadData();
+}
+
+function openInputModal() {
+  document.getElementById('inputModal').classList.add('open');
+  document.getElementById('inputModalTitle').textContent = '투자 데이터 등록 / 수정';
+  document.getElementById('editPersonId').value = '';
+  document.getElementById('formName').value = '';
+  document.getElementById('formTotal').value = '';
+  document.getElementById('formCash').value = '';
+  document.getElementById('formMemo').value = '';
+  document.getElementById('formStockContainer').innerHTML = '';
+  document.getElementById('formWaitContainer').innerHTML = '';
+  addStockFormRow();
+  addWaitFormRow();
+}
+function openEditMode(person) {
+  document.getElementById('inputModal').classList.add('open');
+  document.getElementById('inputModalTitle').textContent = `💥 데이터 수정 모드 (${person.name})`;
+  fillInputForm(person, false);
+}
+function closeInputModal() { document.getElementById('inputModal').classList.remove('open'); }
+
+// ─── INITIALIZATION ──────────────────────────────────────────────
+if (config.githubUrl) document.getElementById('githubLink').href = config.githubUrl;
+if (config.gasWebAppUrl) document.getElementById('setupBanner').style.display = 'none';
+loadData();
+</script>
 </body>
 </html>
