@@ -1,0 +1,647 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="ko"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;base target="_top"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="utf-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>* { box-sizing: border-box; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: linear-gradient(135deg, #eef2ff, #f8fafc, #ecfeff);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: #1f2937;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>header { text-align: center; padding: 30px 16px 22px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>h1 { margin: 0; font-size: 30px; letter-spacing: -0.04em; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>header p { margin: 10px 0 0; color: #6b7280; font-size: 14px; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.container {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: min(1320px, calc(100% - 40px));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 0 auto 44px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>grid-template-columns: 520px 1fr;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 22px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: start;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.card {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(255,255,255,0.96);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid #e5e7eb;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 22px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 20px 50px rgba(15,23,42,0.08);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.title-row {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>h2 { margin: 0; font-size: 20px; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>label {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: block;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 14px 0 4px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 13px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 800;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: #374151;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.money-guide {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 11px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: #2563eb;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: bold;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>input, select {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid #e5e7eb;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 13px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 11px 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>outline: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: white;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>min-height: 42px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>input:focus, select:focus {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-color: #2563eb;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 0 0 4px rgba(37,99,235,0.12);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>button {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 13px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 11px 13px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>white-space: nowrap;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.btn-primary { width: 100%; background: #2563eb; color: white; margin-top: 18px; height: 48px; font-size: 15px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.btn-sub { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.btn-dark { background: #111827; color: white; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.btn-danger { background: #fff1f2; color: #ef4444; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.btn-small { padding: 8px 11px; font-size: 12px; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.edit-mode {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #fffbeb;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid #fde68a;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: #92400e;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 10px 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 13px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 13px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 800;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.section-head {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 18px 0 10px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.section-head h3 { margin: 0; font-size: 15px; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.stock-list, .wait-list { display: grid; gap: 8px; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.stock-item {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>grid-template-columns: 1.2fr 1fr 58px .75fr 76px 42px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 7px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #f8fafc;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid #e5e7eb;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 9px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.wait-item {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>grid-template-columns: 1fr 42px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 7px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #f8fafc;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid #e5e7eb;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 9px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.delete-btn {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 42px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #fff1f2;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: #ef4444;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.toolbar { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.status {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: inline-flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 7px 11px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 999px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #ecfdf5;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: #047857;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>white-space: nowrap;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.table-wrap {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>overflow-x: auto;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid #e5e7eb;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: white;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 820px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>th, td { border-bottom: 1px solid #e5e7eb; padding: 12px 10px; text-align: left; vertical-align: top; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>th { background: #f8fafc; color: #374151; font-size: 12px; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.badge {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: inline-flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 5px 8px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 999px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 800;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>line-height: 1.3;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.plus { background: #dcfce7; color: #166534; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.minus { background: #fee2e2; color: #991b1b; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.wait { background: #fef3c7; color: #92400e; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.empty { text-align: center; color: #6b7280; padding: 42px 20px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.name-cell { font-weight: 900; white-space: nowrap; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.action-cell { display: flex; gap: 6px; flex-wrap: wrap; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.help { margin-top: 10px; color: #6b7280; font-size: 12px; line-height: 1.5; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>@media (max-width: 1080px) { .container { grid-template-columns: 1fr; } }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>@media (max-width: 700px) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.container { width: calc(100% - 24px); }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.row { grid-template-columns: 1fr; }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.stock-item { grid-template-columns: 1fr 1fr; }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.stock-item .delete-btn { grid-column: span 2; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;header&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1&gt;재정학교 투자현황 입력 시스템&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p&gt;고유 ID 기반으로 투명하게 연동되는 GitHub - Google Sheets 시스템입니다.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/header&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;main class="container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;section class="card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="title-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h2&gt;내 투자현황 입력&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button type="button" class="btn-sub" onclick="resetForm()"&gt;초기화&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="editMode" class="edit-mode"&gt;수정 모드입니다. 저장하면 기존 데이터가 덮어쓰기 됩니다.&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;이름&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input id="name" placeholder="예: 홍길동" onblur="loadPersonByName()"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;label&gt;총 투자금&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input id="money" placeholder="예: 20000000" oninput="handleMoneyInput(this, 'moneyGuide')"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div id="moneyGuide" class="money-guide"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;label&gt;예수금&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input id="cash" placeholder="예: 5000000" oninput="handleMoneyInput(this, 'cashGuide')"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div id="cashGuide" class="money-guide"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;변동 / 추가 메모&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input id="memo" placeholder="미입력 시 자동으로 '변동 0' 입력"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="section-head"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;매수 종목&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button type="button" class="btn-sub btn-small" onclick="addStockItem()"&gt;+ 종목 추가&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="stockList" class="stock-list"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="section-head"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;대기 종목&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button type="button" class="btn-sub btn-small" onclick="addWaitItem()"&gt;+ 대기 추가&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="waitList" class="wait-list"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button type="button" id="saveBtn" class="btn-primary" onclick="saveData()"&gt;저장하기&lt;/button&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="help"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>※ 같은 이름으로 저장하거나 우측 표에서 수정을 누르면 기존 데이터가 업데이트됩니다.&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>※ 실시간 통신 환경이므로 데이터 반영에 1~3초 가량 소요될 수 있습니다.</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;section class="card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="title-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h2&gt;전체 현황&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span id="status" class="status"&gt;대기중&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="toolbar"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button type="button" class="btn-dark" onclick="loadData()"&gt;새로고침&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button type="button" class="btn-danger" onclick="clearAll()"&gt;전체 삭제&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="table-wrap"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;th&gt;이름&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;th&gt;총액&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;th&gt;예수금&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;th&gt;매수 종목&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;th&gt;대기&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;th&gt;관리&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;tbody id="tbody"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;tr&gt;&lt;td colspan="6" class="empty"&gt;데이터를 불러오는 중입니다.&lt;/td&gt;&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/section&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/main&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ⚠️ 중요: 아래 주소 영역에 아까 구글에서 최종 발급받은 '새 버전 웹앱 주소'를 통째로 채워 넣으세요.</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwZmr5C_v-no6eIVErRnR-235dZPU6HJvVeiPHh64o8LAbSpKSqZM_fkyuVbgcuuThk/exec';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>let people = [];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let currentId = '';<span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function onlyNumber(value) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return Number(String(value).replace(/[^0-9.-]/g, '')) || 0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function money(value) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return Number(value || 0).toLocaleString('ko-KR') + '원';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function convertToKoreanCurrency(num) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!num || isNaN(num)) return '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (num &gt;= 100000000) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const eok = Math.floor(num / 100000000);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const man = Math.floor((num % 100000000) / 10000);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return man &gt; 0 ? `${eok}억 ${man.toLocaleString('ko-KR')}만 원` : `${eok}억 원`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else if (num &gt;= 10000) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const man = Math.floor(num / 10000);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return `${man.toLocaleString('ko-KR')}만 원`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return num.toLocaleString('ko-KR') + '원';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function handleMoneyInput(input, guideId) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const raw = String(input.value).replace(/[^0-9]/g, '');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>input.value = raw ? Number(raw).toLocaleString('ko-KR') : '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const numValue = Number(raw);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById(guideId).innerText = numValue ? `익는 중: ${convertToKoreanCurrency(numValue)}` : '';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function setStatus(text) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('status').innerText = text;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function normalizeRate(sign, value) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const clean = String(value || '').replace(/[+-%\s]/g, '');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!clean) return '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return sign + clean + '%';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function splitRate(rate) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const text = String(rate || '').trim();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sign: text.startsWith('-') ? '-' : '+',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>value: text.replace(/[+-%\s]/g, '')</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function addStockItem(data) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>data = data || {};</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const rate = splitRate(data.rate || '');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const box = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box.className = 'stock-item';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const name = document.createElement('input');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>name.className = 'stock-name';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>name.placeholder = '종목명';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>name.value = data.name || '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const price = document.createElement('input');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>price.className = 'stock-price';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>price.placeholder = '매수가';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>price.value = data.price ? Number(data.price).toLocaleString('ko-KR') : '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>price.oninput = function() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const raw = String(price.value).replace(/[^0-9]/g, '');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>price.value = raw ? Number(raw).toLocaleString('ko-KR') : '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const sign = document.createElement('select');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>sign.className = 'stock-rate-sign';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>sign.innerHTML = '&lt;option value="+"&gt;+&lt;/option&gt;&lt;option value="-"&gt;-&lt;/option&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>sign.value = rate.sign;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const rateInput = document.createElement('input');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rateInput.className = 'stock-rate';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rateInput.placeholder = '수익률';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rateInput.value = rate.value;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const round = document.createElement('select');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>round.className = 'stock-round';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>round.innerHTML =</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'&lt;option value="1차"&gt;1차&lt;/option&gt;' +</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'&lt;option value="2차"&gt;2차&lt;/option&gt;' +</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'&lt;option value="3차"&gt;3차&lt;/option&gt;' +</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'&lt;option value="4차"&gt;4차&lt;/option&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>round.value = data.round || '1차';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const del = document.createElement('button');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>del.type = 'button';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>del.className = 'delete-btn';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>del.innerText = '×';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>del.onclick = function() { box.remove(); };</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>box.appendChild(name);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box.appendChild(price);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box.appendChild(sign);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box.appendChild(rateInput);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box.appendChild(round);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box.appendChild(del);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('stockList').appendChild(box);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function addWaitItem(value) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const box = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box.className = 'wait-item';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const input = document.createElement('input');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>input.className = 'wait-name';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>input.placeholder = '대기 종목명';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>input.value = value || '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const del = document.createElement('button');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>del.type = 'button';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>del.className = 'delete-btn';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>del.innerText = '×';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>del.onclick = function() { box.remove(); };</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>box.appendChild(input);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box.appendChild(del);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('waitList').appendChild(box);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function resetForm() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>currentId = '';<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('name').value = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('money').value = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('cash').value = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('moneyGuide').innerText = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('cashGuide').innerText = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('memo').value = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('stockList').innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('waitList').innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('editMode').style.display = 'none';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>addStockItem();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>addWaitItem();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function loadData() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>setStatus('DB 불러오는 중');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>fetch(GAS_WEB_APP_URL)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.then(res =&gt; res.json())</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.then(data =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>people = data || [];</p>
+<p class="p1"><span class="Apple-converted-space">          </span>renderTable();</p>
+<p class="p1"><span class="Apple-converted-space">          </span>setStatus('DB 연결 정상');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>})</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.catch(error =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>setStatus('불러오기 실패');</p>
+<p class="p1"><span class="Apple-converted-space">          </span>alert('구글 시트 연동 실패: ' + error.message + '\n구글 웹앱 배포 및 URL 주소를 다시 확인해 주세요.');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function loadPersonByName() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (currentId) return;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const name = document.getElementById('name').value.trim();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!name) return;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const person = people.find(p =&gt; p.name === name);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (person) fillForm(person);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function fillForm(p) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>currentId = p.id || '';<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('name').value = p.name || '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('money').value = p.totalMoney ? Number(p.totalMoney).toLocaleString('ko-KR') : '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('cash').value = p.cash ? Number(p.cash).toLocaleString('ko-KR') : '';</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('moneyGuide').innerText = p.totalMoney ? `익는 중: ${convertToKoreanCurrency(p.totalMoney)}` : '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('cashGuide').innerText = p.cash ? `익는 중: ${convertToKoreanCurrency(p.cash)}` : '';</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('memo').value = p.memo || '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('stockList').innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('waitList').innerHTML = '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (p.stocks &amp;&amp; p.stocks.length) p.stocks.forEach(addStockItem);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>else addStockItem();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (p.waits &amp;&amp; p.waits.length) p.waits.forEach(addWaitItem);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>else addWaitItem();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('editMode').style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>window.scrollTo({ top: 0, behavior: 'smooth' });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function collectStocks() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return Array.from(document.querySelectorAll('.stock-item'))</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.map(row =&gt; ({</p>
+<p class="p1"><span class="Apple-converted-space">          </span>name: row.querySelector('.stock-name').value.trim(),</p>
+<p class="p1"><span class="Apple-converted-space">          </span>price: onlyNumber(row.querySelector('.stock-price').value),</p>
+<p class="p1"><span class="Apple-converted-space">          </span>rate: normalizeRate(</p>
+<p class="p1"><span class="Apple-converted-space">            </span>row.querySelector('.stock-rate-sign').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>row.querySelector('.stock-rate').value</p>
+<p class="p1"><span class="Apple-converted-space">          </span>),</p>
+<p class="p1"><span class="Apple-converted-space">          </span>round: row.querySelector('.stock-round').value</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}))</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.filter(x =&gt; x.name);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function collectWaits() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return Array.from(document.querySelectorAll('.wait-name'))</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.map(x =&gt; x.value.trim())</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.filter(Boolean);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function saveData() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const name = document.getElementById('name').value.trim();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!name) { alert('이름을 입력해주세요.'); return; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const person = {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>id: currentId,<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>name: name,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>totalMoney: onlyNumber(document.getElementById('money').value),</p>
+<p class="p1"><span class="Apple-converted-space">        </span>cash: onlyNumber(document.getElementById('cash').value),</p>
+<p class="p1"><span class="Apple-converted-space">        </span>memo: document.getElementById('memo').value.trim() || '변동 0',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>stocks: collectStocks(),</p>
+<p class="p1"><span class="Apple-converted-space">        </span>waits: collectWaits()</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('saveBtn').disabled = true;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('saveBtn').innerText = '저장 중...';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>setStatus('저장 중');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>fetch(GAS_WEB_APP_URL, {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>method: 'POST',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body: JSON.stringify({ action: 'save', person: person })</p>
+<p class="p1"><span class="Apple-converted-space">      </span>})</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.then(res =&gt; res.json())</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.then(res =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('saveBtn').disabled = false;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('saveBtn').innerText = '저장하기';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if(res.success) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>setStatus('저장 완료');</p>
+<p class="p1"><span class="Apple-converted-space">          </span>resetForm();</p>
+<p class="p1"><span class="Apple-converted-space">          </span>loadData();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else { alert('저장 실패: ' + res.error); }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>})</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.catch(error =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('saveBtn').disabled = false;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('saveBtn').innerText = '저장하기';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setStatus('저장 실패');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>alert('통신 에러가 발생했습니다.\n구글 웹앱 권한 설정을 "Anyone"으로 하셨는지 확인해 주세요.');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function renderTable() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const tbody = document.getElementById('tbody');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>tbody.innerHTML = '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const sorted = people.slice().sort((a, b) =&gt; a.name.localeCompare(b.name, 'ko'));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!sorted.length) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>tbody.innerHTML = '&lt;tr&gt;&lt;td colspan="6" class="empty"&gt;저장된 데이터가 없습니다.&lt;/td&gt;&lt;/tr&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>sorted.forEach(function(p) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const stockHtml = (p.stocks || []).map(function(s) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const cls = String(s.rate || '').startsWith('-') ? 'minus' : 'plus';</p>
+<p class="p1"><span class="Apple-converted-space">          </span>return '&lt;span class="badge ' + cls + '"&gt;' +</p>
+<p class="p1"><span class="Apple-converted-space">            </span>s.name + ' ' + money(s.price) + ' ' + (s.rate || '') + ' ' + (s.round || '') +</p>
+<p class="p1"><span class="Apple-converted-space">            </span>'&lt;/span&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}).join('');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const waitHtml = (p.waits || []).map(function(w) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>return '&lt;span class="badge wait"&gt;' + w + '&lt;/span&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}).join('');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const tr = document.createElement('tr');</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const nameTd = document.createElement('td');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>nameTd.className = 'name-cell';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>nameTd.textContent = p.name;<span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>tr.appendChild(nameTd);</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const restContents =<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>'&lt;td&gt;' + money(p.totalMoney) + '&lt;/td&gt;' +</p>
+<p class="p1"><span class="Apple-converted-space">          </span>'&lt;td&gt;' + money(p.cash) + '&lt;/td&gt;' +</p>
+<p class="p1"><span class="Apple-converted-space">          </span>'&lt;td&gt;' + (stockHtml || '-') + '&lt;/td&gt;' +</p>
+<p class="p1"><span class="Apple-converted-space">          </span>'&lt;td&gt;' + (waitHtml || '-') + '&lt;/td&gt;' +</p>
+<p class="p1"><span class="Apple-converted-space">          </span>'&lt;td&gt;&lt;div class="action-cell"&gt;' +</p>
+<p class="p1"><span class="Apple-converted-space">          </span>'&lt;button type="button" class="btn-sub btn-small src-edit-btn"&gt;수정&lt;/button&gt;' +</p>
+<p class="p1"><span class="Apple-converted-space">          </span>'&lt;button type="button" class="btn-danger btn-small src-del-btn"&gt;삭제&lt;/button&gt;' +</p>
+<p class="p1"><span class="Apple-converted-space">          </span>'&lt;/div&gt;&lt;/td&gt;';</p>
+<p class="p2"><span class="Apple-converted-space">          </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>tr.insertAdjacentHTML('beforeend', restContents);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>tr.querySelector('.src-edit-btn').onclick = function() { fillForm(p); };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>tr.querySelector('.src-del-btn').onclick = function() { deleteData(p.id); };</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>tbody.appendChild(tr);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function deleteData(id) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!confirm('삭제하시겠습니까?')) return;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>setStatus('삭제 중');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>fetch(GAS_WEB_APP_URL, {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>method: 'POST',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body: JSON.stringify({ action: 'delete', id: id })</p>
+<p class="p1"><span class="Apple-converted-space">      </span>})</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.then(res =&gt; res.json())</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.then(res =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if(res.success) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>setStatus('삭제 완료');</p>
+<p class="p1"><span class="Apple-converted-space">          </span>loadData();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else { alert('삭제 실패: ' + res.error); }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function clearAll() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!confirm('정말 전체 데이터를 삭제하시겠습니까?')) return;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>setStatus('전체 삭제 중');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>fetch(GAS_WEB_APP_URL, {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>method: 'POST',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body: JSON.stringify({ action: 'clear' })</p>
+<p class="p1"><span class="Apple-converted-space">      </span>})</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.then(res =&gt; res.json())</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.then(res =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if(res.success) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>setStatus('전체 삭제 완료');</p>
+<p class="p1"><span class="Apple-converted-space">          </span>resetForm();</p>
+<p class="p1"><span class="Apple-converted-space">          </span>loadData();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else { alert('삭제 실패: ' + res.error); }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>window.onload = function() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>resetForm();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>loadData();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
